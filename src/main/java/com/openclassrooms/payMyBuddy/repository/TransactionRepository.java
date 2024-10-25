@@ -1,6 +1,6 @@
-package com.openclassrooms.payMyBuddy.dataLayer.repository;
+package com.openclassrooms.payMyBuddy.repository;
 
-import com.openclassrooms.payMyBuddy.dataLayer.model.Transaction;
+import com.openclassrooms.payMyBuddy.model.Transaction;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
