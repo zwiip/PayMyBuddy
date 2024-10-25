@@ -1,9 +1,6 @@
 package com.openclassrooms.payMyBuddy.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Transaction {
@@ -12,12 +9,18 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @ManyToOne
+    @JoinColumn(name = "sender", nullable = false)
     private User sender;
 
+    @ManyToOne
+    @JoinColumn(name = "sender", nullable = false)
     private User receiver;
 
+    @Column(name = "description")
     private String description;
 
+    @Column(name = "amount", nullable = false)
     private double amount;
 
     public Transaction() {}

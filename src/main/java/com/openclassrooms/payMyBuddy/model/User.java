@@ -2,6 +2,7 @@ package com.openclassrooms.payMyBuddy.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,13 +13,27 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "username", nullable = false)
     private String username;
 
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Column(name = "password", nullable = false)
     private String password;
 
-    private List<User> beneficiaries;
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(
+            name = "assoc_connections",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "connection_id")
+    )
+    private List<User> buddies = new ArrayList<>();
 
     public User() {}
 
@@ -60,4 +75,8 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public List<User> getBuddies() { return buddies; }
+
+    public void setBuddies(List<User> buddies) { this.buddies = buddies; }
 }
