@@ -23,11 +23,12 @@ public class User {
     private String password;
 
     @ManyToMany(
-            fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            })
+            fetch = FetchType.LAZY
+//            cascade = {
+//                    CascadeType.PERSIST,
+//                    CascadeType.MERGE
+//            })
+    )
     @JoinTable(
             name = "assoc_connections",
             joinColumns = @JoinColumn(name = "user_id"),

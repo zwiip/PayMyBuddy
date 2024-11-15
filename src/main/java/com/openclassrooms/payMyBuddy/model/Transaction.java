@@ -3,6 +3,7 @@ package com.openclassrooms.payMyBuddy.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "transaction")
 public class Transaction {
 
     @Id
@@ -14,7 +15,7 @@ public class Transaction {
     private User sender;
 
     @ManyToOne
-    @JoinColumn(name = "sender", nullable = false)
+    @JoinColumn(name = "receiver", nullable = false)
     private User receiver;
 
     @Column(name = "description")
