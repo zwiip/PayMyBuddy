@@ -26,8 +26,7 @@ public class Transaction {
 
     public Transaction() {}
 
-    public Transaction(int id, User sender, User receiver, String description, double amount) {
-        this.id = id;
+    public Transaction(User sender, User receiver, String description, double amount) {
         this.sender = sender;
         this.receiver = receiver;
         this.description = description;
