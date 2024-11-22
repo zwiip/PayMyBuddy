@@ -49,7 +49,7 @@ public class TransactionRepositoryTest {
     public void givenTransaction_whenSaved_thenCanBeFoundById() {
         Transaction savedTransaction = transactionRepository.findById(transactionOne.getId()).orElse(null);
         assertNotNull(savedTransaction);
-        assertEquals(savedTransaction.getAmount(), 20.50);
+        assertEquals(20.50, savedTransaction.getAmount());
     }
 
     @Test
@@ -60,22 +60,22 @@ public class TransactionRepositoryTest {
 
     @Test
     public void givenSavedTransaction_whenFindBySender_thenTransactionFound() {
-        Transaction savedTransaction = transactionRepository.findBySender(anne);
+        List<Transaction> savedTransaction = transactionRepository.findBySender(anne);
         assertNotNull(savedTransaction);
-        assertEquals(savedTransaction.getAmount(), 20.50);
+        assertEquals(20.50, savedTransaction.getFirst().getAmount());
     }
 
     @Test
     public void givenSavedTransaction_whenFindByReceiver_thenTransactionFound() {
-        Transaction savedTransaction = transactionRepository.findByReceiver(anne);
-        assertNotNull(savedTransaction);
-        assertEquals(savedTransaction.getAmount(), 10.35);
+        List<Transaction> savedTransaction = transactionRepository.findByReceiver(anne);
+        assertNotEquals(0, savedTransaction.size());
+        assertEquals(10.35, savedTransaction.getFirst().getAmount());
     }
 
     @Test
     public void givenSavedTransaction_whenFindBySenderAndReceiver_thenTransactionFound() {
-        Transaction savedTransaction = transactionRepository.findBySenderAndReceiver(diana, anne);
-        assertNotNull(savedTransaction);
-        assertEquals(savedTransaction.getAmount(), 10.35);
+        List<Transaction> savedTransaction = transactionRepository.findBySenderAndReceiver(diana, anne);
+        assertNotEquals(0, savedTransaction.size());
+        assertEquals(10.35, savedTransaction.getFirst().getAmount());
     }
 }

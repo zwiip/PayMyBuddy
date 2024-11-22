@@ -24,13 +24,7 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToMany(
-            fetch = FetchType.LAZY
-//            cascade = {
-//                    CascadeType.PERSIST,
-//                    CascadeType.MERGE
-//            })
-    )
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "assoc_connections",
             joinColumns = @JoinColumn(name = "user_id"),

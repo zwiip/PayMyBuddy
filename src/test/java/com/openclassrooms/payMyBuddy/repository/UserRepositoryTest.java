@@ -6,9 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @ActiveProfiles("test")
 @DataJpaTest
 public class UserRepositoryTest {
@@ -32,9 +34,31 @@ public class UserRepositoryTest {
     @Test
     void givenUser_whenSaved_thenCanBeFoundById() {
         User savedUser = userRepository.findById(testUser.getId()).orElse(null);
+
         assertNotNull(savedUser);
         assertEquals(testUser.getUsername(), savedUser.getUsername());
         assertEquals(testUser.getPassword(), savedUser.getPassword());
+    }
+
+    @Test
+    void givenUserWithoutUsername_whenSaved_thenThrowsException() {
+        User invalidUser = new User(null, "bob@gmail.com", "1234");
+
+        assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(invalidUser));
+    }
+
+    @Test
+    void givenUserWithoutEmail_whenSaved_thenThrowsException() {
+        User invalidUser = new User("Invalid", null, "1234");
+
+        assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(invalidUser));
+    }
+
+    @Test
+    void givenUserWithoutPassword_whenSaved_thenThrowsException() {
+        User invalidUser = new User("bob", "bob@gmail.com", null);
+
+        assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(invalidUser));
     }
 
     @Test
@@ -43,6 +67,13 @@ public class UserRepositoryTest {
 
         assertNotNull(foundUser);
         assertEquals("john@gmail.com", foundUser.getEmail());
+    }
+
+    @Test
+    public void givenNonExistentEmail_whenFindUserByEmailCalled_thenReturnsNull() {
+        User foundUser = userRepository.findByEmail("bob@gmail.com");
+
+        assertNull(foundUser);
     }
 
     @Test
@@ -70,6 +101,11 @@ public class UserRepositoryTest {
         User DeletedUser = userRepository.findById(testUser.getId()).orElse(null);
 
         assertNull(DeletedUser);
+    }
+
+    @Test
+    void givenNonExistentUser_whenDeletedById_thenReturnsNull() {
+        assertDoesNotThrow(() -> userRepository.deleteById(999999));
     }
 
     @Test
