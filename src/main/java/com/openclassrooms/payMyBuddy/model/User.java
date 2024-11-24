@@ -3,8 +3,8 @@ package com.openclassrooms.payMyBuddy.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @DynamicUpdate
@@ -30,7 +30,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "connection_id")
     )
-    private List<User> buddies = new ArrayList<>();
+    private Set<User> buddies = new HashSet<>();
 
     public User() {}
 
@@ -42,10 +42,6 @@ public class User {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -72,7 +68,7 @@ public class User {
         this.password = password;
     }
 
-    public List<User> getBuddies() { return buddies; }
+    public Set<User> getBuddies() { return buddies; }
 
-    public void setBuddies(List<User> buddies) { this.buddies = buddies; }
+    public void setBuddies(Set<User> buddies) { this.buddies = buddies; }
 }

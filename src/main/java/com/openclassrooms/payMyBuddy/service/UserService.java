@@ -4,9 +4,7 @@ import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
@@ -20,36 +18,34 @@ public class UserService {
 
     private final Logger logger = Logger.getLogger(UserService.class.getName());
 
-    // vérifier usage
+    // TODO vérifier usage
     public Iterable<User> getUsers() {
         return userRepository.findAll();
     }
 
-    // vérifier usage
+    // TODO vérifier usage
     public Optional<User> getUser(Integer id) {
         return userRepository.findById(id);
     }
 
     public void addNewBuddy(String email, User user) {
-        List<User> myBuddies = user.getBuddies();
+        Set<User> myBuddies = user.getBuddies();
         User newBuddy = userRepository.findByEmail(email);
         if (newBuddy != null) {
             // setting the buddies list if null
             if (myBuddies == null) {
-                user.setBuddies(new ArrayList<>());
+                user.setBuddies(new HashSet<>());
             }
-            // avoid double datas
-            if (!myBuddies.contains(newBuddy)) {
-                myBuddies.add(newBuddy);
-                newBuddy.getBuddies().add(user);
-                userRepository.save(user);
-                userRepository.save(newBuddy);
-            }
+            myBuddies.add(newBuddy);
+            newBuddy.getBuddies().add(user);
+            userRepository.save(user);
+            userRepository.save(newBuddy);
+        } else {
+            logger.warning("Nobody found with email: " + email + " while adding a buddy for user: " + user.getUsername());
         }
-        logger.warning("Nobody found with email: " + email);
     }
 
-    List<User> getAllMyBuddies(User sender) {
+    Set<User> getAllMyBuddies(User sender) {
         return sender.getBuddies();
     }
 
