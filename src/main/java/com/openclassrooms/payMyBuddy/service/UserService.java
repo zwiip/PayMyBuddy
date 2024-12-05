@@ -28,6 +28,10 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     public void addNewBuddy(String email, User user) {
         Set<User> myBuddies = user.getBuddies();
         User newBuddy = userRepository.findByEmail(email);
@@ -45,11 +49,11 @@ public class UserService {
         }
     }
 
-    Set<User> getAllMyBuddies(User sender) {
+    public Set<User> getAllMyBuddies(User sender) {
         return sender.getBuddies();
     }
 
-    List<String> getAllMyBuddyNames(User sender) {
+    public List<String> getAllMyBuddyNames(User sender) {
         List<String> buddiesNames = new ArrayList<>();
         for (User buddy : getAllMyBuddies(sender)) {
             buddiesNames.add(buddy.getUsername());
@@ -57,10 +61,14 @@ public class UserService {
         return buddiesNames;
     }
 
-    User updateUser(String username, String email, String password, User user) {
+    public User updateUser(String username, String email, String password, User user) {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(password);
+        return userRepository.save(user);
+    }
+
+    public User saveUser(User user) {
         return userRepository.save(user);
     }
 }
