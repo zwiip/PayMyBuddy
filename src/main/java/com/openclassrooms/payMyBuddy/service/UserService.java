@@ -29,27 +29,34 @@ public class UserService {
     }
 
     public User findUserByEmail(String email) {
+        logger.info("Finding user by email: " + email);
         return userRepository.findByEmail(email);
     }
 
     public void addNewBuddy(String email, User user) {
         Set<User> myBuddies = user.getBuddies();
         User newBuddy = userRepository.findByEmail(email);
+
         if (newBuddy != null) {
-            // setting the buddies list if null
+
             if (myBuddies == null) {
                 user.setBuddies(new HashSet<>());
             }
+
             myBuddies.add(newBuddy);
+            logger.info("New buddy added: " + newBuddy.getUsername() + " to user: " + user.getUsername());
             newBuddy.getBuddies().add(user);
+            logger.info("New buddy added: " + user.getUsername() + " to user: " + newBuddy.getUsername());
             userRepository.save(user);
             userRepository.save(newBuddy);
+
         } else {
             logger.warning("Nobody found with email: " + email + " while adding a buddy for user: " + user.getUsername());
         }
     }
 
     public Set<User> getAllMyBuddies(User sender) {
+        logger.info("fetching all buddies from " + sender.getUsername());
         return sender.getBuddies();
     }
 
@@ -58,6 +65,7 @@ public class UserService {
         for (User buddy : getAllMyBuddies(sender)) {
             buddiesNames.add(buddy.getUsername());
         }
+        logger.info(buddiesNames.size() + " buddies names found from a list of " + getAllMyBuddyNames(sender).size() + "buddies");
         return buddiesNames;
     }
 
@@ -65,10 +73,12 @@ public class UserService {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(password);
+        logger.info("Updating user: " + username);
         return userRepository.save(user);
     }
 
     public User saveUser(User user) {
+        logger.info("Saving user: " + user.getUsername());
         return userRepository.save(user);
     }
 }
