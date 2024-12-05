@@ -1,5 +1,6 @@
 package com.openclassrooms.payMyBuddy.configuration;
 
+import com.openclassrooms.payMyBuddy.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
