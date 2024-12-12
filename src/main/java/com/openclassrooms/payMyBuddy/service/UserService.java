@@ -2,6 +2,9 @@ package com.openclassrooms.payMyBuddy.service;
 
 import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -11,9 +14,11 @@ import java.util.logging.Logger;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     private final Logger logger = Logger.getLogger(UserService.class.getName());
@@ -79,6 +84,19 @@ public class UserService {
 
     public User saveUser(User user) {
         logger.info("Saving user: " + user.getUsername());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+    }
+
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
+            throw new IllegalStateException("No authenticated user found");
+        }
+
+        String email = authentication.getName();
+
+        return userRepository.findByEmail(email);
     }
 }

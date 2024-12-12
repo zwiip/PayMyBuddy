@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pay my Buddy - Transférer</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+    <body>
+        <header th:insert="~{nav}"></header>
+
+        <main>
+            <form>
+                <select name="" id="">
+                    <option selected>Sélectionner une relation</option>
+                </select>
+                <input type="text" placeholder="Description" />
+                <div class="amount-input">
+                    <input type="number" min="0" step="1" placeholder="0" />
+                    <span>€</span>
+                </div>
+
+                <button class="btn" type="submit">Payer</button>
+            </form>
+
+            <table>
+                <caption>Mes Transactions</caption>
+
+                <thead>
+                    <tr>
+                        <th>Relations</th>
+                        <th>Description</th>
+                        <th>Montant</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="transaction : ${transactions}">
+                        <td th:text="${transaction.getReceiver().getUsername()}">blabla</td>
+                        <td th:text="${transaction.getDescription()}">blabla</td>
+                        <td th:text="${transaction.getAmount()}">12€</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p th:if="${noTransactions}">Vous n'avez aucune transaction.</p>
+
+        </main>
+    </body>
+</html>

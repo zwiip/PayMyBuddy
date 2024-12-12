@@ -10,11 +10,16 @@ html, button, input, p  {
 }
 
 body {
+    height: 100vh;
+    overflow: hidden;
+    padding: 80px;
+}
+
+body:has(.log-box) {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    overflow: hidden;
+    padding: 0;
 }
 
 .column-box {
@@ -30,6 +35,7 @@ body {
     border: solid 1px black;
     height: 50%;
     padding: 10% 5%;
+    overflow-y: auto;
 }
 
 form label {
@@ -53,7 +59,7 @@ form label {
     background-color: var(--main-bg-color);
 }
 
-input {
+input, select {
     border: solid 1px #E0E0E0;
     border-radius: 8px;
     padding: 12px 16px;
@@ -64,4 +70,48 @@ input {
     font-weight: bold;
     color: #828282;
     width: 70%;
+}
+/* header nav */
+nav {
+    margin: 0;
+    color: black;
+}
+
+/* page transfer */
+.header, nav ul {
+    display: flex;
+    justify-content: space-between;
+    list-style-type: none;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+a {
+    text-decoration: none;
+    margin-left: 48px;
+}
+
+table, tr {
+    width: 100%;
+    border-top: solid 1px #E0E0E0;
+    text-align: left;
+}
+
+.amount-input {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.amount-input input {
+    width: 100px;
+    height: 50px;
+    padding-left: 10px;
+}
+
+.amount-input span {
+    position: absolute;
+    left: 30px;
+    pointer-events: none;
 }

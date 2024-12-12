@@ -10,7 +10,7 @@
         <div class="column-box log-box">
             <div class="btn primary-bg">Pay My Buddy</div>
             <div th:if="${error}">
-                <p th:text="${error}"></p>
+                <p>Problème lors de l'inscription</p>
             </div>
             <form class="column-box" th:action="@{/signin}" method="post">
                 <label for="username">Username</label>
