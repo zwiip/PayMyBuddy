@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pay my Buddy - Transférer</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header th:insert="~{nav}"></header>
+
+<main>
+    <form th:action="@{/addBuddy}" method="post">
+        <div>
+            <p><strong>Chercher une relation</strong></p>
+            <input type="email" name="buddyEmail" placeholder="Saisir une adresse mail" />
+        </div>
+
+        <button class="btn primary-bg" type="submit">Ajouter</button>
+    </form>
+
+</main>
+</body>
+</html>
