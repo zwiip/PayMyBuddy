@@ -20,6 +20,7 @@ public class TransactionServiceTest {
     @Mock
     private TransactionRepository transactionRepository;
     Transaction transaction;
+    private UserService userService;
 
     private TransactionService transactionService;
     private Transaction newTransaction;
@@ -31,7 +32,8 @@ public class TransactionServiceTest {
     public void setUp() {
         transactionRepository = mock(TransactionRepository.class);
         transaction = mock(Transaction.class);
-        transactionService = new TransactionService(transactionRepository);
+        userService = mock(UserService.class);
+        transactionService = new TransactionService(transactionRepository, userService);
 
         sender = new User("Sender", "sender@gmail.com", "1234");
         receiver = new User("Receiver", "receiver@gmail.com", "4321");
@@ -55,7 +57,7 @@ public class TransactionServiceTest {
 
     @Test
     public void givenANewTransaction_whenSaveNexTransaction_thenTransactionSaved() {
-        transactionService.saveNewTransaction(sender, receiver, "description", 30);
+        transactionService.saveNewTransaction(sender, "receiver@gmail.com", "description", 30);
 
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }

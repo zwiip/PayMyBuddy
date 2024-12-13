@@ -49,14 +49,26 @@ public class ViewController {
         model.addAttribute("noBuddies", buddies.isEmpty());
         model.addAttribute("transactions", transactions);
         model.addAttribute("noTransactions", transactions.isEmpty());
-        return "transfer";
+        return "/transfer";
     }
 
     @PostMapping("/transfer")
-    public String addTransaction(@RequestParam("buddy") User buddy, @RequestParam("description") String description, @RequestParam("amount") Double amount, Model model) {
+    public String addTransaction(@RequestParam("buddyEmail") String buddyEmail, @RequestParam("description") String description, @RequestParam("amount") Double amount, Model model) {
         User sender = userService.getCurrentUser();
-        transactionService.saveNewTransaction(sender, buddy, description, amount);
-        return "redirect:/transfer";
+        transactionService.saveNewTransaction(sender, buddyEmail, description, amount);
+        return "/transfer";
+    }
+
+    @GetMapping("/addBuddy")
+    public String addBuddy(Model model) {
+        return "/addBuddy";
+    }
+
+    @PostMapping("/addBuddy")
+    public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, Model model) {
+        User currentUser = userService.getCurrentUser();
+        userService.addNewBuddy(buddyEmail, currentUser);
+        return "/addBuddy";
     }
 
 }

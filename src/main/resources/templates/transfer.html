@@ -13,7 +13,7 @@
             <form  th:action="@{/transfer}" method="post">
                 <select name="buddyEmail" id="buddyEmail" required>
                     <option value="" selected disabled>Sélectionner une relation</option>
-                    <option th:each="buddy : ${buddies}" th:value="${buddy}" th:text="${buddy.username}"></option>
+                    <option th:each="buddy : ${buddies}" th:value="${buddy.email}" th:text="${buddy.username}"></option>
                     <option value="" disabled th:if="${noBuddies}">Ajoutez d'abord quelques buddies !</option>
                 </select>
                 <input type="text" name="description" placeholder="Description" />

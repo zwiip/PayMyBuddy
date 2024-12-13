@@ -14,9 +14,11 @@ public class TransactionService {
     private final Logger logger = Logger.getLogger(TransactionService.class.getName());
 
     private final TransactionRepository transactionRepository;
+    private final UserService userService;
 
-    public TransactionService(TransactionRepository transactionRepository) {
+    public TransactionService(TransactionRepository transactionRepository, UserService userService) {
         this.transactionRepository = transactionRepository;
+        this.userService = userService;
     }
 
     public List<Transaction> getAllTransactionsBySender(User sender) {
@@ -24,7 +26,8 @@ public class TransactionService {
         return transactionRepository.findBySender(sender);
     }
 
-    public void saveNewTransaction(User sender, User receiver, String description, double amount) {
+    public void saveNewTransaction(User sender, String buddyEmail, String description, double amount) {
+        User receiver = userService.findUserByEmail(buddyEmail);
         Transaction transaction = new Transaction(sender, receiver, description, amount);
         logger.info("Saving transaction: " + transaction.getDescription());
         transactionRepository.save(transaction);
