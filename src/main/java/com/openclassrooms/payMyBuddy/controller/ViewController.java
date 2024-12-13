@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class ViewController {
@@ -41,12 +42,21 @@ public class ViewController {
     @GetMapping("/transfer")
     public String transfer(Model model) {
         User currentUser = userService.getCurrentUser();
+        Set<User> buddies = userService.getAllMyBuddies(currentUser);
         List<Transaction> transactions = transactionService.getAllTransactionsBySender(currentUser);
 
+        model.addAttribute("buddies", buddies);
+        model.addAttribute("noBuddies", buddies.isEmpty());
         model.addAttribute("transactions", transactions);
         model.addAttribute("noTransactions", transactions.isEmpty());
         return "transfer";
     }
 
+    @PostMapping("/transfer")
+    public String addTransaction(@RequestParam("buddy") User buddy, @RequestParam("description") String description, @RequestParam("amount") Double amount, Model model) {
+        User sender = userService.getCurrentUser();
+        transactionService.saveNewTransaction(sender, buddy, description, amount);
+        return "redirect:/transfer";
+    }
 
 }

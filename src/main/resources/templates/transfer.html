@@ -10,13 +10,15 @@
         <header th:insert="~{nav}"></header>
 
         <main>
-            <form>
-                <select name="" id="">
-                    <option selected>Sélectionner une relation</option>
+            <form  th:action="@{/transfer}" method="post">
+                <select name="buddyEmail" id="buddyEmail" required>
+                    <option value="" selected disabled>Sélectionner une relation</option>
+                    <option th:each="buddy : ${buddies}" th:value="${buddy}" th:text="${buddy.username}"></option>
+                    <option value="" disabled th:if="${noBuddies}">Ajoutez d'abord quelques buddies !</option>
                 </select>
-                <input type="text" placeholder="Description" />
+                <input type="text" name="description" placeholder="Description" />
                 <div class="amount-input">
-                    <input type="number" min="0" step="1" placeholder="0" />
+                    <input type="number" name="amount" min="0" step="1" placeholder="0" required />
                     <span>€</span>
                 </div>
 
