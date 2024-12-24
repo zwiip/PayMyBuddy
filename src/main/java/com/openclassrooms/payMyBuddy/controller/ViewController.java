@@ -4,6 +4,8 @@ import com.openclassrooms.payMyBuddy.model.Transaction;
 import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.service.TransactionService;
 import com.openclassrooms.payMyBuddy.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +38,7 @@ public class ViewController {
     @PostMapping("/signin")
     public String signin(@ModelAttribute("user") User user) {
         userService.saveUser(user);
+
         return "redirect:/login";
     }
 
@@ -49,26 +52,54 @@ public class ViewController {
         model.addAttribute("noBuddies", buddies.isEmpty());
         model.addAttribute("transactions", transactions);
         model.addAttribute("noTransactions", transactions.isEmpty());
+
         return "/transfer";
     }
 
     @PostMapping("/transfer")
-    public String addTransaction(@RequestParam("buddyEmail") String buddyEmail, @RequestParam("description") String description, @RequestParam("amount") Double amount, Model model) {
+    public String addTransaction(@RequestParam("buddyEmail") String buddyEmail, @RequestParam("description") String description, @RequestParam("amount") Double amount) {
         User sender = userService.getCurrentUser();
         transactionService.saveNewTransaction(sender, buddyEmail, description, amount);
+
         return "/transfer";
     }
 
     @GetMapping("/addBuddy")
-    public String addBuddy(Model model) {
+    public String addBuddy() {
         return "/addBuddy";
     }
 
     @PostMapping("/addBuddy")
-    public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, Model model) {
+    public String addBuddy(@RequestParam("buddyEmail") String buddyEmail) {
         User currentUser = userService.getCurrentUser();
         userService.addNewBuddy(buddyEmail, currentUser);
+
         return "/addBuddy";
     }
 
+    @GetMapping("/profile")
+    public String profile(Model model) {
+        User currentUser = userService.getCurrentUser();
+        model.addAttribute("user", currentUser);
+
+        return "/profile";
+    }
+
+    @PostMapping("/profile")
+    public String profile(@ModelAttribute("user") User updatedUser){
+        User currentUser = userService.getCurrentUser();
+        userService.updateUser(updatedUser, currentUser);
+
+        return "redirect:/profile";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return "redirect:login";
+    }
 }

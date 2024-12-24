@@ -74,12 +74,32 @@ public class UserService {
         return buddiesNames;
     }
 
-    public User updateUser(String username, String email, String password, User user) {
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(password);
-        logger.info("Updating user: " + username);
-        return userRepository.save(user);
+    public User updateUser(User updatedUser, User currentUser) {
+        boolean isModified = false;
+
+        if (updatedUser.getUsername() != null && !updatedUser.getUsername().isEmpty() && !updatedUser.getUsername().equals(currentUser.getUsername())) {
+            logger.info("Username changed: " + updatedUser.getUsername());
+            currentUser.setUsername(updatedUser.getUsername());
+            isModified = true;
+        }
+        if (updatedUser.getEmail() != null && !updatedUser.getEmail().isEmpty() && !updatedUser.getEmail().equals(currentUser.getEmail())) {
+            logger.info("Email changed: " + updatedUser.getEmail());
+            currentUser.setEmail(updatedUser.getEmail());
+            isModified = true;
+        }
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            logger.info("Password changed");
+            currentUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            isModified = true;
+        }
+
+        if (isModified) {
+            logger.info("Updating user: " + currentUser.getUsername());
+            return userRepository.save(currentUser);
+        } else {
+            logger.warning("No change found for user: " + currentUser.getUsername());
+            return currentUser;
+        }
     }
 
     public User saveUser(User user) {
@@ -94,9 +114,8 @@ public class UserService {
         if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal().equals("anonymousUser")) {
             throw new IllegalStateException("No authenticated user found");
         }
-
-        String email = authentication.getName();
-
-        return userRepository.findByEmail(email);
+        int currentUserId = Integer.parseInt(authentication.getName());
+        return userRepository.findById(currentUserId)
+                .orElseThrow(() -> new IllegalStateException("User with id " + currentUserId + " not found"));
     }
 }

@@ -33,7 +33,12 @@ public class SpringSecurityConfig {
                         .defaultSuccessUrl("/transfer", true)
                         .permitAll()
                 )
-                .logout((logout) -> logout.permitAll());
+                .logout((logout) -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                );
                 return http.build();
     }
 

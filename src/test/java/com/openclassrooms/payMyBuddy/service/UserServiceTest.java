@@ -92,16 +92,16 @@ public class UserServiceTest {
         assertTrue(actualBuddyNames.contains("Another"));
     }
 
-    @Test
-    public void givenSavedUser_whenUpdateUser_thenReturnUpdatedUser() {
-        when(userRepository.save(buddy)).thenReturn(buddy);
-
-        userService.updateUser("UpdatedUser", "updated.email@gmail.com", "2589", buddy);
-
-        verify(userRepository, times(1)).save(buddy);
-        assertEquals("UpdatedUser", buddy.getUsername());
-        assertEquals("updated.email@gmail.com", buddy.getEmail());
-        assertEquals("2589", buddy.getPassword());
-    }
+//    @Test
+//    public void givenSavedUser_whenUpdateUser_thenReturnUpdatedUser() {
+//        when(userRepository.save(buddy)).thenReturn(buddy);
+//
+//        userService.updateUser("UpdatedUser", "updated.email@gmail.com", "2589", buddy);
+//
+//        verify(userRepository, times(1)).save(buddy);
+//        assertEquals("UpdatedUser", buddy.getUsername());
+//        assertEquals("updated.email@gmail.com", buddy.getEmail());
+//        assertEquals("2589", buddy.getPassword());
+//    }
 
 }

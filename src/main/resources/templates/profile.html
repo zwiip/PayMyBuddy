@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pay my Buddy - Profil</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header th:insert="~{nav}"></header>
+
+<main>
+    <form th:action="@{/profile}" th:object="${user}" method="post">
+        <div>
+            <div>
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" th:value="${user.username}" />
+            </div>
+            <div>
+                <label for="email">Mail</label>
+                <input type="email" name="email" id="email" th:value="${user.email}" />
+            </div>
+            <div>
+                <label for="password">mot de passe</label>
+                <input type="password" name="password" id="password" placeholder="mot de passe" />
+            </div>
+        </div>
+
+        <button class="btn primary-bg" type="submit">Modifier</button>
+    </form>
+
+</main>
+</body>
+</html>
