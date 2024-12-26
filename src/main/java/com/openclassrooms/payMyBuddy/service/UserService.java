@@ -103,6 +103,10 @@ public class UserService {
     }
 
     public User saveUser(User user) {
+        if (!isEmailUnique(user.getEmail(), user.getId())) {
+            throw new IllegalArgumentException("Email already exists : " + user.getEmail());
+        }
+
         logger.info("Saving user: " + user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
@@ -117,5 +121,11 @@ public class UserService {
         int currentUserId = Integer.parseInt(authentication.getName());
         return userRepository.findById(currentUserId)
                 .orElseThrow(() -> new IllegalStateException("User with id " + currentUserId + " not found"));
+    }
+
+    public boolean isEmailUnique(String email, Integer userId) {
+        logger.fine("Checking if email is unique: " + email);
+        User existingUserWithThisEmail = userRepository.findByEmail(email);
+        return existingUserWithThisEmail == null || existingUserWithThisEmail.getId() == (userId);
     }
 }
