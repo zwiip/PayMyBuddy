@@ -3,7 +3,8 @@ CREATE TABLE users
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(100) NOT NULL
+    password VARCHAR(100) NOT NULL,
+    wallet DECIMAL(10,2) NOT NULL
 );
 
 CREATE TABLE assoc_connections

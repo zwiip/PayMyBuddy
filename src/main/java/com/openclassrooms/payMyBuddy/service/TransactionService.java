@@ -3,6 +3,7 @@ package com.openclassrooms.payMyBuddy.service;
 import com.openclassrooms.payMyBuddy.model.Transaction;
 import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.repository.TransactionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,10 +27,38 @@ public class TransactionService {
         return transactionRepository.findBySender(sender);
     }
 
+    @Transactional
+    public boolean isTransactionValid(Transaction transaction) {
+        logger.info("Checking if transaction valid: " + transaction.getSender().getUsername());
+        if (transaction.getSender().getWallet() <= 0) {
+            logger.warning("Insufficient balance for user: " + transaction.getSender().getUsername());
+            return false;
+        }
+        if (transaction.getSender().getWallet() < transaction.getAmount()) {
+            logger.warning("Invalid transaction amount: " + transaction.getAmount());
+            return false;
+        }
+
+        transaction.getSender().setWallet(transaction.getSender().getWallet() - transaction.getAmount());
+        transaction.getReceiver().setWallet(transaction.getReceiver().getWallet() + transaction.getAmount());
+        logger.info("Transaction valid with the amount: " +transaction.getAmount());
+
+        userService.saveUser(transaction.getSender());
+        logger.info(transaction.getSender().getUsername() + "'s new balance: " + transaction.getSender().getWallet());
+        userService.saveUser(transaction.getReceiver());
+        logger.info(transaction.getReceiver().getUsername() + "'s new balance: " + transaction.getReceiver().getWallet());
+
+        return true;
+    }
+
     public void saveNewTransaction(User sender, String buddyEmail, String description, double amount) {
         User receiver = userService.findUserByEmail(buddyEmail);
         Transaction transaction = new Transaction(sender, receiver, description, amount);
-        logger.info("Saving transaction: " + transaction.getDescription());
-        transactionRepository.save(transaction);
+        if(isTransactionValid(transaction)) {
+            logger.info("Saving transaction: " + transaction.getDescription());
+            transactionRepository.save(transaction);
+        } else {
+            logger.warning("Transaction could not be saved");
+        }
     }
 }

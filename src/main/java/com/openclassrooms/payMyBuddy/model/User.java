@@ -24,6 +24,9 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "wallet", nullable = false)
+    private double wallet;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "assoc_connections",
@@ -66,6 +69,12 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public double getWallet() {return wallet;}
+
+    public void setWallet(double wallet) {
+        this.wallet = wallet;
     }
 
     public Set<User> getBuddies() { return buddies; }
