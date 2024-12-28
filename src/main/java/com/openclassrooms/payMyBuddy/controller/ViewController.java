@@ -57,9 +57,12 @@ public class ViewController {
     }
 
     @PostMapping("/transfer")
-    public String addTransaction(@RequestParam("buddyEmail") String buddyEmail, @RequestParam("description") String description, @RequestParam("amount") Double amount) {
+    public String addTransaction(@RequestParam("buddyEmail") String buddyEmail, @RequestParam("description") String description, @RequestParam("amount") Double amount, Model model) {
         User sender = userService.getCurrentUser();
         transactionService.saveNewTransaction(sender, buddyEmail, description, amount);
+
+        model.addAttribute("transactions", transactionService.getAllTransactionsBySender(sender));
+        model.addAttribute("noTransactions", transactionService.getAllTransactionsBySender(sender).isEmpty());
 
         return "/transfer";
     }
