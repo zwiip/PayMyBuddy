@@ -115,3 +115,20 @@ table, tr {
     left: 30px;
     pointer-events: none;
 }
+
+.message {
+    margin: 1em 0;
+    padding: 0.5em;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.message.success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+.message.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+}

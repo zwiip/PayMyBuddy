@@ -36,8 +36,13 @@ public class ViewController {
     }
 
     @PostMapping("/signin")
-    public String signin(@ModelAttribute("user") User user) {
-        userService.saveUser(user);
+    public String signin(@ModelAttribute("user") User user, Model model) {
+        try {
+            userService.saveUser(user);
+            model.addAttribute("successMessage", "Compte utilisateur créé avec succès !");
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Erreur lors de la création du compte utilisateur : " + e.getMessage());
+        }
 
         return "redirect:/login";
     }
@@ -59,10 +64,18 @@ public class ViewController {
     @PostMapping("/transfer")
     public String addTransaction(@RequestParam("buddyEmail") String buddyEmail, @RequestParam("description") String description, @RequestParam("amount") Double amount, Model model) {
         User sender = userService.getCurrentUser();
-        transactionService.saveNewTransaction(sender, buddyEmail, description, amount);
+        Set<User> buddies = userService.getAllMyBuddies(sender);
+        try {
+            transactionService.saveNewTransaction(sender, buddyEmail, description, amount);
+            model.addAttribute("successMessage", "Transaction effectuée avec succès !");
+        } catch ( Exception e ) {
+            model.addAttribute("errorMessage", "Erreur lors de la transaction : " + e.getMessage());
+        }
 
         model.addAttribute("transactions", transactionService.getAllTransactionsBySender(sender));
         model.addAttribute("noTransactions", transactionService.getAllTransactionsBySender(sender).isEmpty());
+        model.addAttribute("buddies", buddies);
+        model.addAttribute("noBuddies", buddies.isEmpty());
 
         return "/transfer";
     }
@@ -73,9 +86,14 @@ public class ViewController {
     }
 
     @PostMapping("/addBuddy")
-    public String addBuddy(@RequestParam("buddyEmail") String buddyEmail) {
-        User currentUser = userService.getCurrentUser();
-        userService.addNewBuddy(buddyEmail, currentUser);
+    public String addBuddy(@RequestParam("buddyEmail") String buddyEmail, Model model) {
+        try {
+            User currentUser = userService.getCurrentUser();
+            userService.addNewBuddy(buddyEmail, currentUser);
+            model.addAttribute("successMessage", "Buddy ajouté avec succès !");
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Erreur lors de l'ajout du Buddy : " + e.getMessage());
+        }
 
         return "/addBuddy";
     }
@@ -89,11 +107,17 @@ public class ViewController {
     }
 
     @PostMapping("/profile")
-    public String profile(@ModelAttribute("user") User updatedUser){
-        User currentUser = userService.getCurrentUser();
-        userService.updateUser(updatedUser, currentUser);
+    public String profile(@ModelAttribute("user") User updatedUser, Model model) {
+        try {
+            User currentUser = userService.getCurrentUser();
+            userService.updateUser(updatedUser, currentUser);
 
-        return "redirect:/profile";
+            model.addAttribute("successMessage", "Profil mis à jour avec succès !");
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Erreur lors de la mise à jour du profil : " + e.getMessage());
+        }
+
+        return "/profile";
     }
 
     @GetMapping("/logout")

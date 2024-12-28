@@ -7,18 +7,23 @@
         <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
     </head>
     <body>
-        <div class="column-box log-box">
-            <div class="btn primary-bg">Pay My Buddy</div>
-            <form class="column-box" th:action="@{/login}" method="post">
-                <label for="email">Mail</label>
-                <input class="log-input" type="email" id="email" name="email" placeholder="Mail" required/>
+        <main>
+            <div class="column-box log-box">
+                <div class="btn primary-bg">Pay My Buddy</div>
 
-                <label for="password">Mot de Passe</label>
-                <input class="log-input" type="password" id="password" name="password" placeholder="Mot de passe" />
+                <form class="column-box" th:action="@{/login}" method="post">
+                    <label for="email">Mail</label>
+                    <input class="log-input" type="email" id="email" name="email" placeholder="Mail" required/>
 
-                <button class="btn" type="submit">Se connecter</button>
-            </form>
-            <a th:href="@{/signin}"><small>Créer un compte</small></a>
-        </div>
+                    <label for="password">Mot de Passe</label>
+                    <input class="log-input" type="password" id="password" name="password" placeholder="Mot de passe" />
+
+                    <button class="btn" type="submit">Se connecter</button>
+                </form>
+
+                <a th:href="@{/signin}"><small>Créer un compte</small></a>
+            </div>
+        </main>
+
     </body>
 </html>

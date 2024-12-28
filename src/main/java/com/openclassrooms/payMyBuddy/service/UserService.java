@@ -4,6 +4,7 @@ import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,13 @@ public class UserService {
 
     public User findUserByEmail(String email) {
         logger.info("Finding user by email: " + email);
-        return userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            logger.warning("No user found with email: " + email);
+        } else {
+            logger.info("Found user: " + user.getUsername());
+        }
+        return user;
     }
 
     public void addNewBuddy(String email, User user) {
@@ -57,6 +64,7 @@ public class UserService {
 
         } else {
             logger.warning("Nobody found with email: " + email + " while adding a buddy for user: " + user.getUsername());
+            throw new UsernameNotFoundException("User not found with email: " + email);
         }
     }
 
@@ -98,7 +106,7 @@ public class UserService {
             return userRepository.save(currentUser);
         } else {
             logger.warning("No change found for user: " + currentUser.getUsername());
-            return currentUser;
+            throw new IllegalArgumentException("No change found for user: " + currentUser.getUsername());
         }
     }
 

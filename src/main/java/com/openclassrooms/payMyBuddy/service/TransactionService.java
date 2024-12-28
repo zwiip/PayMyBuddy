@@ -59,6 +59,7 @@ public class TransactionService {
             transactionRepository.save(transaction);
         } else {
             logger.warning("Transaction could not be saved");
+            throw new RuntimeException("Transaction could not be saved for the amount: " + amount + " and a wallet of " + sender.getWallet());
         }
     }
 }

@@ -10,6 +10,13 @@
         <header th:insert="~{nav}"></header>
 
         <main>
+            <div th:if="${successMessage}" class="message success">
+                <p th:text="${successMessage}"></p>
+            </div>
+            <div th:if="${errorMessage}" class="message error">
+                <p th:text="${errorMessage}"></p>
+            </div>
+
             <form  th:action="@{/transfer}" method="post">
                 <select name="buddyEmail" id="buddyEmail" required>
                     <option value="" selected disabled>Sélectionner une relation</option>
