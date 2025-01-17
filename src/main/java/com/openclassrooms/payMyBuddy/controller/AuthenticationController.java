@@ -34,7 +34,7 @@ public class AuthenticationController {
             userService.saveNewUser(user);
             model.addAttribute("successMessage", "Compte utilisateur créé avec succès !");
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Erreur lors de la création du compte utilisateur : " + e.getMessage());
+            model.addAttribute("errorMessage", "Erreur lors de la création du compte utilisateur.");
         }
 
         return "redirect:/login";

@@ -47,7 +47,7 @@ public class TransactionController {
             transactionService.saveNewTransaction(sender, buddyEmail, description, amount);
             model.addAttribute("successMessage", "Transaction effectuée avec succès !");
         } catch ( Exception e ) {
-            model.addAttribute("errorMessage", "Erreur lors de la transaction : " + e.getMessage());
+            model.addAttribute("errorMessage", "Erreur lors de la transaction.");
         }
 
         model.addAttribute("transactions", transactionService.getAllTransactionsBySender(sender));

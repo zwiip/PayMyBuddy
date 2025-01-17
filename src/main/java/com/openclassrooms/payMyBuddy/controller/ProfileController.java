@@ -33,7 +33,7 @@ public class ProfileController {
 
             model.addAttribute("successMessage", "Profil mis à jour avec succès !");
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Erreur lors de la mise à jour du profil : " + e.getMessage());
+            model.addAttribute("errorMessage", "Erreur lors de la mise à jour du profil");
         }
 
         return "/profile";

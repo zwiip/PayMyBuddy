@@ -29,7 +29,7 @@ public class BuddyController {
             userService.addNewBuddy(buddyEmail, currentUser);
             model.addAttribute("successMessage", "Buddy ajouté avec succès !");
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Erreur lors de l'ajout du Buddy : " + e.getMessage());
+            model.addAttribute("errorMessage", "Erreur lors de l'ajout du Buddy.");
         }
 
         return "/addBuddy";

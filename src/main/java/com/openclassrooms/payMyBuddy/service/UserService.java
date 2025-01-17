@@ -24,16 +24,6 @@ public class UserService {
 
     private final Logger logger = Logger.getLogger(UserService.class.getName());
 
-    // TODO vérifier usage
-    public Iterable<User> getUsers() {
-        return userRepository.findAll();
-    }
-
-    // TODO vérifier usage
-    public Optional<User> getUser(Integer id) {
-        return userRepository.findById(id);
-    }
-
     public User findUserByEmail(String email) {
         logger.info("Finding user by email: " + email);
         User user = userRepository.findByEmail(email);
@@ -82,7 +72,7 @@ public class UserService {
         return buddiesNames;
     }
 
-    public User updateUser(User updatedUser, User currentUser) {
+    public void updateUser(User updatedUser, User currentUser) {
         boolean isModified = false;
 
         if (updatedUser.getUsername() != null && !updatedUser.getUsername().isEmpty() && !updatedUser.getUsername().equals(currentUser.getUsername())) {
@@ -103,7 +93,8 @@ public class UserService {
 
         if (isModified) {
             logger.info("Updating user: " + currentUser.getUsername());
-            return userRepository.save(currentUser);
+            userRepository.save(currentUser);
+
         } else {
             logger.warning("No change found for user: " + currentUser.getUsername());
             throw new IllegalArgumentException("No change found for user: " + currentUser.getUsername());

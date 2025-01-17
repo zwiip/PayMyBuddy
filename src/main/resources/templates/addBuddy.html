@@ -20,7 +20,8 @@
     <form th:action="@{/addBuddy}" method="post">
         <div>
             <p><strong>Chercher une relation</strong></p>
-            <input type="email" name="buddyEmail" placeholder="Saisir une adresse mail" />
+            <label for="buddyEmail"></label>
+            <input type="email" id="buddyEmail" name="buddyEmail" placeholder="Saisir une adresse mail" />
         </div>
 
         <button class="btn primary-bg" type="submit">Ajouter</button>
