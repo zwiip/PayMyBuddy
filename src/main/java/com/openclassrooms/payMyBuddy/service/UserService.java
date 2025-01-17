@@ -110,14 +110,19 @@ public class UserService {
         }
     }
 
-    public User saveUser(User user) {
+    public void updateWallet(User user, double newWallet) {
+        user.setWallet(newWallet);
+        userRepository.save(user);
+    }
+
+    public void saveNewUser(User user) {
         if (!isEmailUnique(user.getEmail(), user.getId())) {
             throw new IllegalArgumentException("Email already exists : " + user.getEmail());
         }
 
         logger.info("Saving user: " + user.getUsername());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     public User getCurrentUser() {

@@ -27,34 +27,36 @@ public class TransactionService {
         return transactionRepository.findBySender(sender);
     }
 
-    @Transactional
     public boolean isTransactionValid(Transaction transaction) {
-        logger.info("Checking if transaction valid: " + transaction.getSender().getUsername());
-        if (transaction.getSender().getWallet() <= 0) {
+        logger.fine("Checking if transaction valid: " + transaction.getSender().getUsername());
+        double walletBalance = transaction.getSender().getWallet();
+
+        if (walletBalance <= 0) {
             logger.warning("Insufficient balance for user: " + transaction.getSender().getUsername());
             return false;
         }
-        if (transaction.getSender().getWallet() < transaction.getAmount()) {
+        if (walletBalance < transaction.getAmount()) {
             logger.warning("Invalid transaction amount: " + transaction.getAmount());
             return false;
         }
 
-        transaction.getSender().setWallet(transaction.getSender().getWallet() - transaction.getAmount());
-        transaction.getReceiver().setWallet(transaction.getReceiver().getWallet() + transaction.getAmount());
-        logger.info("Transaction valid with the amount: " +transaction.getAmount());
-
-        userService.saveUser(transaction.getSender());
-        logger.info(transaction.getSender().getUsername() + "'s new balance: " + transaction.getSender().getWallet());
-        userService.saveUser(transaction.getReceiver());
-        logger.info(transaction.getReceiver().getUsername() + "'s new balance: " + transaction.getReceiver().getWallet());
-
+        logger.info("Transaction valid with the amount: " + transaction.getAmount());
         return true;
     }
 
+    @Transactional
     public void saveNewTransaction(User sender, String buddyEmail, String description, double amount) {
         User receiver = userService.findUserByEmail(buddyEmail);
+
         Transaction transaction = new Transaction(sender, receiver, description, amount);
+
         if(isTransactionValid(transaction)) {
+            userService.updateWallet(sender, sender.getWallet() - transaction.getAmount());
+            logger.info(sender.getUsername() + "'s new balance: " + sender.getWallet());
+
+            userService.updateWallet(receiver, receiver.getWallet() + transaction.getAmount());
+            logger.info(receiver.getUsername() + "'s new balance: " + receiver.getWallet());
+
             logger.info("Saving transaction: " + transaction.getDescription());
             transactionRepository.save(transaction);
         } else {

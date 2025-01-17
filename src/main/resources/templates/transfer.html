@@ -18,15 +18,17 @@
             </div>
 
             <form class="transfer-form" th:action="@{/transfer}" method="post">
+                <label for="buddyEmail">Sélectionner une relation</label>
                 <select class="transfer-form-input" name="buddyEmail" id="buddyEmail" required>
                     <option class="dark-input" selected disabled>Sélectionner une relation</option>
                     <option class="dark-input" th:each="buddy : ${buddies}" th:value="${buddy.email}" th:text="${buddy.username}"></option>
                     <option class="dark-input" disabled th:if="${noBuddies}">Ajoutez d'abord quelques buddies !</option>
                 </select>
-                <input type="text" class="dark-input transfer-form-input" name="description" placeholder="Description" />
+                <label for="description" >Description</label>
+                <input type="text" class="dark-input transfer-form-input" id="description" name="description" placeholder="Description" />
                 <div class="amount-input">
-                    <input class="dark-input" type="number" name="amount" min="0" step="1" placeholder="0" required />
-                    <span>€</span>
+                    <label for="amount">Montant (€)</label>
+                    <input id="amount" class="dark-input" type="number" name="amount" min="0.00" step=".01" placeholder="0€" required />
                 </div>
 
                 <button class="btn" type="submit">Payer</button>

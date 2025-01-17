@@ -27,7 +27,7 @@ public class User {
     @Column(name = "wallet", nullable = false)
     private double wallet;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "assoc_connections",
             joinColumns = @JoinColumn(name = "user_id"),
