@@ -9,7 +9,7 @@
 <body>
 <header th:insert="~{nav}"></header>
 
-<main>
+<main class="column-center-center">
     <div th:if="${successMessage}" class="message success">
         <p th:text="${successMessage}"></p>
     </div>
@@ -17,23 +17,21 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <form th:action="@{/profile}" th:object="${user}" method="post">
-        <div>
-            <div>
+    <form class="row-between-center profile-form" th:action="@{/profile}" th:object="${user}" method="post">
+        <div class="row-between-stretch">
+            <div class="column-between">
                 <label for="username">Username</label>
-                <input type="text" name="username" id="username" th:value="${user.username}" />
-            </div>
-            <div>
                 <label for="email">Mail</label>
-                <input type="email" name="email" id="email" th:value="${user.email}" />
-            </div>
-            <div>
                 <label for="password">mot de passe</label>
-                <input type="password" name="password" id="password" placeholder="mot de passe" />
+            </div>
+            <div class="column-between">
+                <input type="email" name="email" id="email" th:value="${user.email}"><span>></span></input>
+                <input type="text" name="username" id="username" th:value="${user.username}"><span>></span></input>
+                <input type="password" name="password" id="password" placeholder="mot de passe"><span>></span></input>
             </div>
         </div>
 
-        <button class="btn primary-bg" type="submit">Modifier</button>
+        <button class="btn primary-bg item-bottom" type="submit">Modifier</button>
     </form>
 
 </main>

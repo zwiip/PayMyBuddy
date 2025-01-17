@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
     <body>
         <div class="header" th:fragment="navbar">
             <p>Pay my Buddy</p>
             <nav>
                 <ul>
-                    <li><a th:href="@{/transfer}">Transférer</a></li>
-                    <li><a th:href="@{/profile}">Profil</a></li>
-                    <li><a th:href="@{/addBuddy}">Ajouter relation</a></li>
+                    <li><a th:href="@{/transfer}" th:classappend="${activePage == 'transfer'} ? 'active-link' : ''">Transférer</a></li>
+                    <li><a th:href="@{/profile}" th:classappend="${activePage == 'profile'} ? 'active-link' : ''">Profil</a></li>
+                    <li><a th:href="@{/addBuddy}" th:classappend="${activePage == 'addBuddy'} ? 'active-link' : ''">Ajouter relation</a></li>
                     <li><a th:href="logout">Se déconnecter</a></li>
                 </ul>
             </nav>

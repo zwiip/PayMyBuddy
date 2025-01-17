@@ -57,6 +57,7 @@ public class ViewController {
         model.addAttribute("noBuddies", buddies.isEmpty());
         model.addAttribute("transactions", transactions);
         model.addAttribute("noTransactions", transactions.isEmpty());
+        model.addAttribute("activePage","transfer");
 
         return "/transfer";
     }
@@ -81,7 +82,8 @@ public class ViewController {
     }
 
     @GetMapping("/addBuddy")
-    public String addBuddy() {
+    public String addBuddy(Model model) {
+        model.addAttribute("activePage","addBuddy");
         return "/addBuddy";
     }
 
@@ -102,6 +104,7 @@ public class ViewController {
     public String profile(Model model) {
         User currentUser = userService.getCurrentUser();
         model.addAttribute("user", currentUser);
+        model.addAttribute("activePage","profile");
 
         return "/profile";
     }

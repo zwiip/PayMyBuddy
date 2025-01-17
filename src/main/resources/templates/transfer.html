@@ -17,41 +17,43 @@
                 <p th:text="${errorMessage}"></p>
             </div>
 
-            <form  th:action="@{/transfer}" method="post">
-                <select name="buddyEmail" id="buddyEmail" required>
-                    <option value="" selected disabled>Sélectionner une relation</option>
-                    <option th:each="buddy : ${buddies}" th:value="${buddy.email}" th:text="${buddy.username}"></option>
-                    <option value="" disabled th:if="${noBuddies}">Ajoutez d'abord quelques buddies !</option>
+            <form class="transfer-form" th:action="@{/transfer}" method="post">
+                <select class="transfer-form-input" name="buddyEmail" id="buddyEmail" required>
+                    <option class="dark-input" selected disabled>Sélectionner une relation</option>
+                    <option class="dark-input" th:each="buddy : ${buddies}" th:value="${buddy.email}" th:text="${buddy.username}"></option>
+                    <option class="dark-input" disabled th:if="${noBuddies}">Ajoutez d'abord quelques buddies !</option>
                 </select>
-                <input type="text" name="description" placeholder="Description" />
+                <input type="text" class="dark-input transfer-form-input" name="description" placeholder="Description" />
                 <div class="amount-input">
-                    <input type="number" name="amount" min="0" step="1" placeholder="0" required />
+                    <input class="dark-input" type="number" name="amount" min="0" step="1" placeholder="0" required />
                     <span>€</span>
                 </div>
 
                 <button class="btn" type="submit">Payer</button>
             </form>
 
-            <table>
-                <caption>Mes Transactions</caption>
-
-                <thead>
+            <div class="transactions-list">
+                <table>
+                    <caption>Mes Transactions</caption>
+                    <thead>
                     <tr>
                         <th>Relations</th>
                         <th>Description</th>
                         <th>Montant</th>
                     </tr>
-                </thead>
+                    </thead>
 
-                <tbody>
+                    <tbody>
                     <tr th:each="transaction : ${transactions}">
                         <td th:text="${transaction.getReceiver().getUsername()}">blabla</td>
                         <td th:text="${transaction.getDescription()}">blabla</td>
                         <td th:text="${transaction.getAmount()}">12€</td>
                     </tr>
-                </tbody>
-            </table>
-            <p th:if="${noTransactions}">Vous n'avez aucune transaction.</p>
+                    </tbody>
+                </table>
+                <p th:if="${noTransactions}">Vous n'avez aucune transaction.</p>
+            </div>
+
 
         </main>
     </body>
