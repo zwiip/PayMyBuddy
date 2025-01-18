@@ -1,7 +1,7 @@
 INSERT IGNORE INTO users (username, email, password, wallet) VALUES
-('Anne', 'anne@shirley.com', '$2a$10$VcjUbsEz1pMj3E5G0ddB/.t9Xz8KcYchMIc.YamWzRn58v6tDMyvC', 100.00), -- Mot de passe: password
-('Matthew', 'matthew@cuthbert.com', '$2a$10$8Lf8NNLsff.PF5.J6zGqTuUPcWUnLrRbGH8OoBya.jIBbtI8.xX8C', 50.00), -- Mot de passe: password
-('Diana', 'diana@barry.com', '$2a$10$A8S7gJQUw4.RD9W9ZZiY9uQ4pJLsE5KmdJK3YH/E0I/7KdpNUEVcO', 75.00); -- Mot de passe: password
+('Anne', 'anne@shirley.com', '$2a$10$9XD5mdtjci3pYsaBNeaRCOuVf9busXXBo7rxcCknbRlHC0O8feKde', 100.00), -- Mot de passe: avonlea
+('Matthew', 'matthew@cuthbert.com', '$2a$10$9XD5mdtjci3pYsaBNeaRCOuVf9busXXBo7rxcCknbRlHC0O8feKde', 50.00), -- Mot de passe: avonlea
+('Diana', 'diana@barry.com', '$2a$10$9XD5mdtjci3pYsaBNeaRCOuVf9busXXBo7rxcCknbRlHC0O8feKde', 75.00); -- Mot de passe: avonlea
 
 INSERT IGNORE INTO assoc_connections (user_id, connection_id) VALUES
 ((SELECT id FROM users WHERE email = 'anne@shirley.com'), (SELECT id FROM users WHERE email = 'matthew@cuthbert.com')),
