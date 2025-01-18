@@ -1,4 +1,7 @@
-CREATE TABLE users
+CREATE DATABASE IF NOT EXISTS pay_my_buddy;
+USE pay_my_buddy;
+
+CREATE TABLE IF NOT EXISTS users
 (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL,
@@ -7,7 +10,7 @@ CREATE TABLE users
     wallet DECIMAL(10,2) NOT NULL
 );
 
-CREATE TABLE assoc_connections
+CREATE TABLE IF NOT EXISTS assoc_connections
 (
     user_id INT NOT NULL,
     connection_id INT NOT NULL,
@@ -16,7 +19,7 @@ CREATE TABLE assoc_connections
     FOREIGN KEY (connection_id) REFERENCES users (id)
 );
 
-CREATE TABLE transaction
+CREATE TABLE IF NOT EXISTS transaction
 (
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     sender INT NOT NULL,
