@@ -17,17 +17,22 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <form class="row-between-center profile-form" th:action="@{/profile}" th:object="${user}" method="post">
-        <div class="row-between-stretch">
-            <div class="column-between">
+    <form class="row-between-center h100 profile-form" th:action="@{/profile}" th:object="${user}" method="post">
+        <div class="row-between-center h100">
+            <div class="column-around h100">
                 <label for="username">Username</label>
                 <label for="email">Mail</label>
-                <label for="password">mot de passe</label>
+                <label for="password">Mot de passe</label>
             </div>
-            <div class="column-between">
-                <input type="email" name="email" id="email" th:value="${user.email}"><span>></span></input>
-                <input type="text" name="username" id="username" th:value="${user.username}"><span>></span></input>
-                <input type="password" name="password" id="password" placeholder="mot de passe"><span>></span></input>
+            <div class="column-around h100">
+                <div class="row-between-start"><span>@</span><input type="text" name="username" id="username" size="1" th:value="${user.username}"><span>></span></div>
+                <input type="email" name="email" id="email" th:value="${user.email}">
+                <input type="password" name="password" id="password" placeholder="mot de passe">
+            </div>
+            <div class="column-around h100">
+                <br>
+                <span>></span>
+                <span>></span>
             </div>
         </div>
 

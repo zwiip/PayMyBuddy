@@ -17,10 +17,9 @@
         <p th:text="${errorMessage}"></p>
     </div>
 
-    <form th:action="@{/addBuddy}" method="post">
+    <form class="row-between-center" id="addBuddy" th:action="@{/addBuddy}" method="post">
         <div>
-            <p><strong>Chercher une relation</strong></p>
-            <label for="buddyEmail"></label>
+            <label for="buddyEmail"><strong>Chercher une relation</strong></label>
             <input type="email" id="buddyEmail" name="buddyEmail" placeholder="Saisir une adresse mail" />
         </div>
 

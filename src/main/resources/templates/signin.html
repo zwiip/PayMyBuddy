@@ -8,15 +8,15 @@
     </head>
     <body>
         <main>
-            <div class="column-between-center log-box">
+            <div class="column-between-center h100 log-box">
                 <div class="btn primary-bg">Pay My Buddy</div>
 
                 <div th:if="${error}">
                     <p>Problème lors de l'inscription</p>
                 </div>
 
-                <form class="column-between-center" th:action="@{/signin}" method="post">
-                    <div class="column-center-center">
+                <form class="column-between-center h100" th:action="@{/signin}" method="post">
+                    <div class="column-center-center h100">
                         <label for="username">Username</label>
                         <input class="log-input" type="text" id="username" name="username" placeholder="Username" required/>
 

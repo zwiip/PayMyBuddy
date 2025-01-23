@@ -15,8 +15,9 @@
     box-sizing: border-box;
 }
 
-html, button, input, p, select  {
+html, button, input, p, select {
     font-size: 24px;
+    weight: 400;
 }
 
 body {
@@ -29,56 +30,41 @@ main {
     padding: 2% 4%;
 }
 
+/* layout */
+.h100 {
+    height: 100%;
+}
+
 .column-center-center {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
 }
-
-/* layout */
 
 .column-between-center {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    height: 100%;
 }
 
-.column-between {
+.column-around {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    align-items: stretch;
+    justify-content: space-around;
 }
 
-.row-stretch-center {
+.row-between-start {
     display: flex;
-    justify-content: stretch;
+    justify-content: start;
     align-items: center;
-    width: 100%;
 }
 
 .row-between-center {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 100%;
-}
-
-.row-between-stretch {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    height: 100%;
-}
-
-.row {
-    display: flex;
-    justify-content: flex-start;
 }
 
 .item-bottom {
@@ -164,9 +150,14 @@ a {
     width: 100%;
 }
 
+.transfer-form input[type=number]::-webkit-inner-spin-button, .transfer-form input[type=number]::-webkit-outer-spin-button {
+  opacity: 1;
+}
+
 .transfer-form .btn {
     padding: 32px 37.5px;
     margin: 3%;
+    font-size: 16px;
 }
 
 .btn {
@@ -222,17 +213,54 @@ input, select {
     left: 30px;
     pointer-events: none;
 }
+.profile-form {
+    width: 45%;
+    height: 40%;
+}
 
 .profile-form input {
     border: none;
+    display: flex;
 }
 
-.profile-form input span {
-    text-align: right;
+.profile-form input::placeholder {
+    color: black;
+}
+
+.profile-form span {
+    color: var(--neutral-color);
+}
+
+.profile-form .row-between-start span:first-of-type {
+    color: black;
 }
 
 .profile-form div div label {
+    display: block;
     text-wrap: nowrap;
+    font-weight: 600;
+}
+
+.profile-form .row-between-center {
+    height: 180px;
+    width: 230px;
+}
+
+.profile-form div div .row-between-start {
+    padding-left: 16px;
+}
+
+.profile-form div div .row-between-start input {
+    padding-left: 0;
+}
+
+#addBuddy input {
+    margin-top:2%;
+    width: 98%;
+}
+
+#addBuddy button {
+    font-weight: 500;:
 }
 
 /* TABLEAU */
@@ -240,11 +268,13 @@ input, select {
     border: 1px solid var(--neutral-color);
     border-radius: 8px;
     overflow: hidden;
+    height: 60%;
 }
 
 table {
-    width: 100%;
+    width: 98%;
     overflow-y: auto;
+    margin: 1%;
 }
 
 table caption, table th {
