@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -131,5 +132,25 @@ public class UserService {
         logger.fine("Checking if email is unique: " + email);
         User existingUserWithThisEmail = userRepository.findByEmail(email);
         return existingUserWithThisEmail == null || existingUserWithThisEmail.getId() == (userId);
+    }
+
+    /**
+     * Gestion de la suppression d'un utilisateur
+     * Retire l'utilisateur de la liste des buddies pour chacun de ses buddies.
+     * Puis supprime sa liste de buddies.
+     * Enfin, supprime l'utilisateur.
+     * @param user l'utilisateur à supprimer
+     */
+    @Transactional
+    public void deleteUser(User user) {
+        for (User buddy : user.getBuddies()) {
+            buddy.getBuddies().remove(user);
+            logger.fine("Deleted user from buddy list: " + buddy.getUsername());
+        }
+        user.getBuddies().clear();
+        logger.fine("Deleted buddy list of the user: " + user.getUsername());
+
+        userRepository.delete(user);
+        logger.info("Deleted user: " + user.getUsername());
     }
 }

@@ -27,7 +27,7 @@ public class User {
     @Column(name = "wallet", nullable = false)
     private double wallet;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(
             name = "assoc_connections",
             joinColumns = @JoinColumn(name = "user_id"),
