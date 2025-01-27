@@ -22,7 +22,7 @@ public class ProfileController {
         model.addAttribute("user", currentUser);
         model.addAttribute("activePage","profile");
 
-        return "/profile";
+        return "profile";
     }
 
     @PostMapping("/profile")

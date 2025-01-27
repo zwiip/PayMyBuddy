@@ -36,7 +36,7 @@ public class TransactionController {
         model.addAttribute("noTransactions", transactions.isEmpty());
         model.addAttribute("activePage","transfer");
 
-        return "/transfer";
+        return "transfer";
     }
 
     @PostMapping("/transfer")
@@ -55,6 +55,6 @@ public class TransactionController {
         model.addAttribute("buddies", buddies);
         model.addAttribute("noBuddies", buddies.isEmpty());
 
-        return "/transfer";
+        return "transfer";
     }
 }
