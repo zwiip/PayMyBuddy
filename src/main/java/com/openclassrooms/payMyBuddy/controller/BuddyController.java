@@ -19,7 +19,7 @@ public class BuddyController {
     @GetMapping("/addBuddy")
     public String addBuddy(Model model) {
         model.addAttribute("activePage","addBuddy");
-        return "/addBuddy";
+        return "addBuddy";
     }
 
     @PostMapping("/addBuddy")
@@ -32,6 +32,6 @@ public class BuddyController {
             model.addAttribute("errorMessage", "Erreur lors de l'ajout du Buddy.");
         }
 
-        return "/addBuddy";
+        return "addBuddy";
     }
 }
