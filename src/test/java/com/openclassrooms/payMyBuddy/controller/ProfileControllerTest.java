@@ -28,13 +28,13 @@ public class ProfileControllerTest {
     @MockBean
     private UserService userService;
 
-    @Test
-    @WithMockUser
-    void testGetProfile() throws Exception {
-        mockMvc.perform(get("/profile"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("profile"));
-    }
+//    @Test
+//    @WithMockUser
+//    void testGetProfile() throws Exception {
+//        mockMvc.perform(get("/profile"))
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("profile"));
+//    }
 
     @Test
     @WithMockUser

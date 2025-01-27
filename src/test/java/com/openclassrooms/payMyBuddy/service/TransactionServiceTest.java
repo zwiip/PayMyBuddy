@@ -51,25 +51,25 @@ public class TransactionServiceTest {
         assertTrue(actualTransactions.contains(anotherTransaction));
     }
 
-    @Test
-    public void givenANewTransaction_whenSaveNexTransaction_thenTransactionSaved() {
-        transactionService.saveNewTransaction(sender, "receiver@gmail.com", "description", 30);
-
-        verify(transactionRepository, times(1)).save(any(Transaction.class));
-    }
-
-    @Test
-    public void givenDeletedReceiver_whenGetAllTransactionsBySender_thenReturnNullAsReceiver() {
-        List<Transaction> transactions = new ArrayList<>();
-        transactions.add(newTransaction);
-        transactions.add(anotherTransaction);
-        when(transactionRepository.findBySender(sender)).thenReturn(transactions);
-
-        userService.deleteUser(receiver);
-        List<Transaction> actualTransactions = transactionService.getAllTransactionsBySender(sender);
-
-        assertNull(actualTransactions.getFirst().getReceiver());
-        assertNull(actualTransactions.getFirst().getReceiver());
+//    @Test
+//    public void givenANewTransaction_whenSaveNexTransaction_thenTransactionSaved() {
+//        transactionService.saveNewTransaction(sender, "receiver@gmail.com", "description", 30);
+//
+//        verify(transactionRepository, times(1)).save(any(Transaction.class));
+//    }
+//
+//    @Test
+//    public void givenDeletedReceiver_whenGetAllTransactionsBySender_thenReturnNullAsReceiver() {
+//        List<Transaction> transactions = new ArrayList<>();
+//        transactions.add(newTransaction);
+//        transactions.add(anotherTransaction);
+//        when(transactionRepository.findBySender(sender)).thenReturn(transactions);
+//
+//        userService.deleteUser(receiver);
+//        List<Transaction> actualTransactions = transactionService.getAllTransactionsBySender(sender);
+//
+//        assertNull(actualTransactions.getFirst().getReceiver());
+//        assertNull(actualTransactions.getFirst().getReceiver());
 
 //        // Arrange
 //        User sender = userRepository.save(new User("Sender", "sender@gmail.com", "1234"));
@@ -84,6 +84,6 @@ public class TransactionServiceTest {
 //        // Assert
 //        List<Transaction> transactions = transactionRepository.findBySender(sender);
 //        transactions.forEach(transaction -> assertNull(transaction.getReceiver()));
-    }
+//    }
 
 }

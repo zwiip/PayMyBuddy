@@ -36,6 +36,6 @@ public class ProfileController {
             model.addAttribute("errorMessage", "Erreur lors de la mise à jour du profil");
         }
 
-        return "/profile";
+        return "profile";
     }
 }

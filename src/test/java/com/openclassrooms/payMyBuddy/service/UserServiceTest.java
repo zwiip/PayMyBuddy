@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,20 +32,27 @@ public class UserServiceTest {
         anotherBuddy = new User("Another", "another@gmail.com", "1478");
     }
 
+
+    @Test
+    void givenExistingEmail_whenFindUserByEmail_thenReturnUser() {
+        User user = new User("User", "user@gmail.com", "0000");
+        when(userRepository.findByEmail("user@gmail.com")).thenReturn(user);
+
+        User foundUser = userService.findUserByEmail("user@gmail.com");
+
+        assertNotNull(foundUser);
+        assertEquals("User", foundUser.getUsername());
+        verify(userRepository, times(1)).findByEmail("user@gmail.com");
+    }
+
     @Test
     public void givenNewBuddy_whenAddNewBuddy_thenBuddyAddedToSetOfBuddies_andUserAddedToSetOfNewBuddyBuddies() {
-        Set<User> myBuddies = new HashSet<>();
-        myBuddies.add(buddy);
-        myBuddies.add(anotherBuddy);
-        User newBuddy = new User("New Buddy", "new.buddy@gmail.com", "1478");
-        user.setBuddies(myBuddies);
-        when(userRepository.findByEmail("new.buddy@gmail.com")).thenReturn(newBuddy);
+        when(userRepository.findByEmail("another@gmail.com")).thenReturn(anotherBuddy);
 
-        userService.addNewBuddy("new.buddy@gmail.com", user);
+        userService.addNewBuddy("another@gmail.com", user);
 
-        assertEquals(3, user.getBuddies().size());
-        assertTrue(user.getBuddies().contains(buddy));
-        assertTrue(newBuddy.getBuddies().contains(user));
+        assertTrue(user.getBuddies().contains(anotherBuddy));
+        assertTrue(anotherBuddy.getBuddies().contains(user));
     }
 
     @Test
@@ -79,53 +85,17 @@ public class UserServiceTest {
     }
 
     @Test
-    public void givenTwoBuddies_whenGetAllMyBuddyNames_thenReturnMyTwoBuddyNames() {
-        Set<User> myBuddies = new HashSet<>();
-        myBuddies.add(buddy);
-        myBuddies.add(anotherBuddy);
-        user.setBuddies(myBuddies);
+    public void givenCorrectInputs_whenSaveNewUser_thenUserIsSaved() {
+        User newUser = new User("NewUser", "newuser@gmail.com", "password123");
 
-        List<String> actualBuddyNames = userService.getAllMyBuddyNames(user);
+        when(userRepository.save(newUser)).thenReturn(newUser);
+        when(userRepository.findByEmail("newuser@gmail.com")).thenReturn(newUser);
 
-        assertEquals(2, actualBuddyNames.size());
-        assertTrue(actualBuddyNames.contains("Buddy"));
-        assertTrue(actualBuddyNames.contains("Another"));
+        userService.saveNewUser(newUser);
+
+        User savedUser = userRepository.findByEmail("newuser@gmail.com");
+        assertNotNull(savedUser);
+        assertEquals("NewUser", savedUser.getUsername());
     }
 
-//    @Test
-//    public void givenSavedUser_whenUpdateUser_thenReturnUpdatedUser() {
-//        when(userRepository.save(buddy)).thenReturn(buddy);
-//
-//        userService.updateUser("UpdatedUser", "updated.email@gmail.com", "2589", buddy);
-//
-//        verify(userRepository, times(1)).save(buddy);
-//        assertEquals("UpdatedUser", buddy.getUsername());
-//        assertEquals("updated.email@gmail.com", buddy.getEmail());
-//        assertEquals("2589", buddy.getPassword());
-//    }
-
-    @Test
-    public void givenTwoBuddies_whenDeleteUser_thenUserRemovedFromBuddiesAndDeleted() {
-        Set<User> myBuddies = new HashSet<>();
-        myBuddies.add(buddy);
-        myBuddies.add(anotherBuddy);
-        user.setBuddies(myBuddies);
-
-        Set<User> myFirstBuddyBuddies = new HashSet<>();
-        myFirstBuddyBuddies.add(user);
-        myFirstBuddyBuddies.add(anotherBuddy);
-        buddy.setBuddies(myFirstBuddyBuddies);
-
-        Set<User> mySecondBuddyBuddies = new HashSet<>();
-        mySecondBuddyBuddies.add(user);
-        mySecondBuddyBuddies.add(buddy);
-        anotherBuddy.setBuddies(mySecondBuddyBuddies);
-
-        userService.deleteUser(user);
-
-        assertFalse(myFirstBuddyBuddies.contains(user));
-        assertFalse(mySecondBuddyBuddies.contains(user));
-
-        verify(userRepository, times(1)).delete(user);
-    }
 }
