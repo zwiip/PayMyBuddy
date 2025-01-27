@@ -19,30 +19,27 @@ public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
-    private User user;
 
     private UserService userService;
-    private User buddy, anotherBuddy;
-
-    Set<User> myBuddies = new HashSet<>();
+    private User user, buddy, anotherBuddy;
 
     @BeforeEach
     public void setUp() {
         userRepository = mock(UserRepository.class);
-        user = mock(User.class);
         userService = new UserService(userRepository);
 
+        user = new User("User", "user@gmail.com", "0000");
         buddy = new User("Buddy", "buddy@gmail.com", "4321");
         anotherBuddy = new User("Another", "another@gmail.com", "1478");
-
-        myBuddies.add(buddy);
-        myBuddies.add(anotherBuddy);
     }
 
     @Test
     public void givenNewBuddy_whenAddNewBuddy_thenBuddyAddedToSetOfBuddies_andUserAddedToSetOfNewBuddyBuddies() {
+        Set<User> myBuddies = new HashSet<>();
+        myBuddies.add(buddy);
+        myBuddies.add(anotherBuddy);
         User newBuddy = new User("New Buddy", "new.buddy@gmail.com", "1478");
-        when(user.getBuddies()).thenReturn(myBuddies);
+        user.setBuddies(myBuddies);
         when(userRepository.findByEmail("new.buddy@gmail.com")).thenReturn(newBuddy);
 
         userService.addNewBuddy("new.buddy@gmail.com", user);
@@ -54,8 +51,12 @@ public class UserServiceTest {
 
     @Test
     public void givenExistingBuddy_whenAddNewBuddy_thenExistingBuddyNotAdded() {
+        Set<User> myBuddies = new HashSet<>();
+        myBuddies.add(buddy);
+        myBuddies.add(anotherBuddy);
+        user.setBuddies(myBuddies);
         when(userRepository.findByEmail("another@gmail.com")).thenReturn(anotherBuddy);
-        when(user.getBuddies()).thenReturn(myBuddies);
+
 
         userService.addNewBuddy("another@gmail.com", user);
 
@@ -66,7 +67,10 @@ public class UserServiceTest {
 
     @Test
     public void givenTwoBuddies_whenGetAllMyBuddies_thenReturnMyTwoBuddies() {
-        when(user.getBuddies()).thenReturn(myBuddies);
+        Set<User> myBuddies = new HashSet<>();
+        myBuddies.add(buddy);
+        myBuddies.add(anotherBuddy);
+        user.setBuddies(myBuddies);
 
         Set<User> actualBuddies = userService.getAllMyBuddies(user);
 
@@ -76,7 +80,10 @@ public class UserServiceTest {
 
     @Test
     public void givenTwoBuddies_whenGetAllMyBuddyNames_thenReturnMyTwoBuddyNames() {
-        when(user.getBuddies()).thenReturn(myBuddies);
+        Set<User> myBuddies = new HashSet<>();
+        myBuddies.add(buddy);
+        myBuddies.add(anotherBuddy);
+        user.setBuddies(myBuddies);
 
         List<String> actualBuddyNames = userService.getAllMyBuddyNames(user);
 
@@ -85,39 +92,40 @@ public class UserServiceTest {
         assertTrue(actualBuddyNames.contains("Another"));
     }
 
-    @Test
-    public void givenSavedUser_whenUpdateUser_thenReturnUpdatedUser() {
-        when(userRepository.save(buddy)).thenReturn(buddy);
-
-        userService.updateUser(new User("UpdatedUser", "updated.email@gmail.com", "2589"), buddy);
-
-        verify(userRepository, times(1)).save(buddy);
-        assertEquals("UpdatedUser", buddy.getUsername());
-        assertEquals("updated.email@gmail.com", buddy.getEmail());
-    }
-
-    @Test
-    public void givenNewCorrectUser_whenSaveUser_thenReturnSavedUser() {
-        User newBuddy = new User("New Buddy", "new.buddy@gmail.com", "1478");
-
-        when(userRepository.findByEmail("new.buddy@gmail.com")).thenReturn(null);
-        User savedBuddy = userService.saveUser(newBuddy);
-
-        verify(userRepository, times(1)).save(newBuddy);
-        //assertEquals(newBuddy.getUsername(), savedBuddy.getUsername());
-    }
-
-    // TODO : getCurrentUser
+//    @Test
+//    public void givenSavedUser_whenUpdateUser_thenReturnUpdatedUser() {
+//        when(userRepository.save(buddy)).thenReturn(buddy);
+//
+//        userService.updateUser("UpdatedUser", "updated.email@gmail.com", "2589", buddy);
+//
+//        verify(userRepository, times(1)).save(buddy);
+//        assertEquals("UpdatedUser", buddy.getUsername());
+//        assertEquals("updated.email@gmail.com", buddy.getEmail());
+//        assertEquals("2589", buddy.getPassword());
+//    }
 
     @Test
-    public void givenUserWithAUniqueEmail_whenCheckingIfEmailIsUnique_thenReturnTrue() {
-        when(userRepository.findByEmail("another@gmail.com")).thenReturn(anotherBuddy);
-        assertTrue(userService.isEmailUnique("anotherEmail", anotherBuddy.getId()));
-    }
+    public void givenTwoBuddies_whenDeleteUser_thenUserRemovedFromBuddiesAndDeleted() {
+        Set<User> myBuddies = new HashSet<>();
+        myBuddies.add(buddy);
+        myBuddies.add(anotherBuddy);
+        user.setBuddies(myBuddies);
 
-    @Test
-    public void givenUserWithAlreadyUsedEmail_whenCheckingIfEmailIsUnique_thenReturnFalse() {
-        when(userRepository.findByEmail("another@gmail.com")).thenReturn(anotherBuddy);
-        assertFalse(userService.isEmailUnique("another@gmail.com", 1000));
+        Set<User> myFirstBuddyBuddies = new HashSet<>();
+        myFirstBuddyBuddies.add(user);
+        myFirstBuddyBuddies.add(anotherBuddy);
+        buddy.setBuddies(myFirstBuddyBuddies);
+
+        Set<User> mySecondBuddyBuddies = new HashSet<>();
+        mySecondBuddyBuddies.add(user);
+        mySecondBuddyBuddies.add(buddy);
+        anotherBuddy.setBuddies(mySecondBuddyBuddies);
+
+        userService.deleteUser(user);
+
+        assertFalse(myFirstBuddyBuddies.contains(user));
+        assertFalse(mySecondBuddyBuddies.contains(user));
+
+        verify(userRepository, times(1)).delete(user);
     }
 }

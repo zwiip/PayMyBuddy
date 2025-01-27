@@ -19,19 +19,15 @@ public class TransactionServiceTest {
 
     @Mock
     private TransactionRepository transactionRepository;
-    Transaction transaction;
     private UserService userService;
 
+    private Transaction transaction, newTransaction, anotherTransaction;
     private TransactionService transactionService;
-    private Transaction newTransaction;
-    private Transaction anotherTransaction;
-    private User sender;
-    private User receiver;
+    private User sender, receiver;
 
     @BeforeEach
     public void setUp() {
         transactionRepository = mock(TransactionRepository.class);
-        transaction = mock(Transaction.class);
         userService = mock(UserService.class);
         transactionService = new TransactionService(transactionRepository, userService);
 
@@ -61,4 +57,33 @@ public class TransactionServiceTest {
 
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
+
+    @Test
+    public void givenDeletedReceiver_whenGetAllTransactionsBySender_thenReturnNullAsReceiver() {
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.add(newTransaction);
+        transactions.add(anotherTransaction);
+        when(transactionRepository.findBySender(sender)).thenReturn(transactions);
+
+        userService.deleteUser(receiver);
+        List<Transaction> actualTransactions = transactionService.getAllTransactionsBySender(sender);
+
+        assertNull(actualTransactions.getFirst().getReceiver());
+        assertNull(actualTransactions.getFirst().getReceiver());
+
+//        // Arrange
+//        User sender = userRepository.save(new User("Sender", "sender@gmail.com", "1234"));
+//        User receiver = userRepository.save(new User("Receiver", "receiver@gmail.com", "4321"));
+//
+//        transactionRepository.save(new Transaction(sender, receiver, "Description 1", 50.0));
+//        transactionRepository.save(new Transaction(sender, receiver, "Description 2", 30.0));
+//
+//        // Act
+//        userRepository.delete(receiver);
+//
+//        // Assert
+//        List<Transaction> transactions = transactionRepository.findBySender(sender);
+//        transactions.forEach(transaction -> assertNull(transaction.getReceiver()));
+    }
+
 }
