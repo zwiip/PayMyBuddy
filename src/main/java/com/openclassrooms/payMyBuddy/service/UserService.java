@@ -15,18 +15,24 @@ import java.util.logging.Logger;
 @Service
 public class UserService {
 
+    /* VARIABLES */
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final Logger logger = Logger.getLogger(UserService.class.getName());
 
+    /* CONSTRUCTOR */
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    private final Logger logger = Logger.getLogger(UserService.class.getName());
-
+    /**
+     * Find the User matching this email.
+     * @param email a String representing an email we want to search.
+     * @return a User object or null if no user matches the given email.
+     */
     public User findUserByEmail(String email) {
-        logger.info("Finding user by email: " + email);
+        logger.fine("Finding user by email: " + email);
         User user = userRepository.findByEmail(email);
         if (user == null) {
             logger.warning("No user found with email: " + email);
@@ -36,6 +42,14 @@ public class UserService {
         return user;
     }
 
+    /**
+     * Fetch all the buddies of the given user to add a new one and add the user to the Buddy's buddies.
+     * It's a Transactional method, so if everything's ok, the changes are commited to the database.
+     * If not, everything rollbacks and nothing impacts the database.
+     * @param email a String representing the email of the buddy to add.
+     * @param user the given User who wants to add a new Buddy.
+     */
+    @Transactional
     public void addNewBuddy(String email, User user) {
         Set<User> myBuddies = user.getBuddies();
         User newBuddy = userRepository.findByEmail(email);
@@ -59,35 +73,38 @@ public class UserService {
         }
     }
 
+    /**
+     * Fetch all the buddies of the given User.
+     * @param sender a User object.
+     * @return a Set of User so no duplicates can be added.
+     */
     public Set<User> getAllMyBuddies(User sender) {
         logger.info("fetching all buddies from " + sender.getUsername());
         return sender.getBuddies();
     }
 
-    public List<String> getAllMyBuddyNames(User sender) {
-        List<String> buddiesNames = new ArrayList<>();
-        for (User buddy : getAllMyBuddies(sender)) {
-            buddiesNames.add(buddy.getUsername());
-        }
-        logger.info(buddiesNames.size() + " buddies names found from a list of " + getAllMyBuddyNames(sender).size() + "buddies");
-        return buddiesNames;
-    }
+    // TODO: vérifier si suppr getAllMyBuddyNames ok (supprimer des tests)
 
+    /**
+     * Checks which information has been modified before saving the User in the database.
+     * @param updatedUser a User object with the new information.
+     * @param currentUser the current User has saved in the database, on which we will set the new information.
+     */
     public void updateUser(User updatedUser, User currentUser) {
         boolean isModified = false;
 
         if (updatedUser.getUsername() != null && !updatedUser.getUsername().isEmpty() && !updatedUser.getUsername().equals(currentUser.getUsername())) {
-            logger.info("Username changed: " + updatedUser.getUsername());
+            logger.fine("Username changed: " + updatedUser.getUsername());
             currentUser.setUsername(updatedUser.getUsername());
             isModified = true;
         }
         if (updatedUser.getEmail() != null && !updatedUser.getEmail().isEmpty() && !updatedUser.getEmail().equals(currentUser.getEmail())) {
-            logger.info("Email changed: " + updatedUser.getEmail());
+            logger.fine("Email changed: " + updatedUser.getEmail());
             currentUser.setEmail(updatedUser.getEmail());
             isModified = true;
         }
         if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
-            logger.info("Password changed");
+            logger.fine("Password changed");
             currentUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
             isModified = true;
         }
@@ -102,11 +119,21 @@ public class UserService {
         }
     }
 
+    /**
+     * Update the wallet amount of a given User.
+     * @param user a User object.
+     * @param newWallet the new amount of money to save for the User's wallet.
+     */
     public void updateWallet(User user, double newWallet) {
         user.setWallet(newWallet);
         userRepository.save(user);
     }
 
+    /**
+     * Used to save a new user.
+     * Check if the Email is unique in the database, then encode the password to save the new User in the database.
+     * @param user a new User object to save in the database.
+     */
     public void saveNewUser(User user) {
         if (!isEmailUnique(user.getEmail(), user.getId())) {
             throw new IllegalArgumentException("Email already exists : " + user.getEmail());
@@ -117,6 +144,10 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Return the User authenticated and using the app.
+     * @return a User object.
+     */
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -128,18 +159,25 @@ public class UserService {
                 .orElseThrow(() -> new IllegalStateException("User with id " + currentUserId + " not found"));
     }
 
-    public boolean isEmailUnique(String email, Integer userId) {
+    /**
+     * A helper method to check if the given email already exists in the database for another User than the given one.
+     * @param email a String representing the email to check.
+     * @param userId the user's Id that is trying to add this email to his profile.
+     * @return a boolean.
+     */
+    private boolean isEmailUnique(String email, Integer userId) {
         logger.fine("Checking if email is unique: " + email);
         User existingUserWithThisEmail = userRepository.findByEmail(email);
         return existingUserWithThisEmail == null || existingUserWithThisEmail.getId() == (userId);
     }
 
     /**
-     * Gestion de la suppression d'un utilisateur
-     * Retire l'utilisateur de la liste des buddies pour chacun de ses buddies.
-     * Puis supprime sa liste de buddies.
-     * Enfin, supprime l'utilisateur.
-     * @param user l'utilisateur à supprimer
+     * Deleting a User.
+     * Delete the User from the buddies list of each buddies. Then delete his own buddies list.
+     * Then delete the user.
+     * If everything's ok, the changes are commited to the database.
+     * If not, it rollbacks and the database isn't impacted.
+     * @param user the User object to delete.
      */
     @Transactional
     public void deleteUser(User user) {
