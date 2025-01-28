@@ -82,15 +82,4 @@ public class TransactionServiceTest {
 
         verify(transactionRepository, never()).save(any(Transaction.class));
     }
-
-//
-//    @Test
-//    public void givenANewTransaction_whenSaveNewTransaction_thenTransactionSaved() {
-//        transactionService.saveNewTransaction(sender, "receiver@gmail.com", "description", 30);
-//
-//        verify(transactionRepository, times(1)).save(any(Transaction.class));
-//    }
-
-
-
 }

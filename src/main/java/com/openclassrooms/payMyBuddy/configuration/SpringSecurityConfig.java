@@ -20,6 +20,13 @@ public class SpringSecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Configuration de la sécurité de l'application.
+     * Définit les règles de filtrage pour les requêtes HTTP.
+     * Configure l'authentification par formulaire et la gestion de déconnexion.
+     * Fournit un encodeur de mots de passe sécurisé et un gestionnaire d'authentification.
+     */
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -53,5 +60,4 @@ public class SpringSecurityConfig {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
         return authenticationManagerBuilder.build();
     }
-
 }

@@ -185,7 +185,9 @@ public class UserService {
 
     /**
      * Deleting a User.
-     * Delete the User from the buddies list of each buddies. Then delete his own buddies list.
+     * Delete the User from the buddies list of each buddies.
+     * Then delete his own buddies list.
+     * Then turn to null for transactions he has sent or received.
      * Then delete the user.
      * If everything's ok, the changes are commited to the database.
      * If not, it rollbacks and the database isn't impacted.

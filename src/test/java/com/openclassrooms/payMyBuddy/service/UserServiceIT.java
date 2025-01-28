@@ -116,7 +116,7 @@ public class UserServiceIT {
         assertEquals(newWallet, user.getWallet());
     }
 
-    @Test // ce test ne fonctionne pas
+    @Test
     public void testSaveNewUser() {
         User newUser = new User("NewUser", "newuser@gmail.com", "password123");
         userService.saveNewUser(newUser);
