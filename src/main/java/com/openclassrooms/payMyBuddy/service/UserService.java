@@ -1,6 +1,8 @@
 package com.openclassrooms.payMyBuddy.service;
 
+import com.openclassrooms.payMyBuddy.model.Transaction;
 import com.openclassrooms.payMyBuddy.model.User;
+import com.openclassrooms.payMyBuddy.repository.TransactionRepository;
 import com.openclassrooms.payMyBuddy.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,12 +20,14 @@ public class UserService {
     /* VARIABLES */
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final TransactionRepository transactionRepository;
     private final Logger logger = Logger.getLogger(UserService.class.getName());
 
     /* CONSTRUCTOR */
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, TransactionRepository transactionRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
+        this.transactionRepository = transactionRepository;
     }
 
     /**
@@ -54,13 +58,23 @@ public class UserService {
         Set<User> myBuddies = user.getBuddies();
         User newBuddy = userRepository.findByEmail(email);
 
+
         if (newBuddy != null) {
+            logger.fine("Found a new buddy : " + newBuddy.getUsername());
 
             if (myBuddies == null) {
-                user.setBuddies(new HashSet<>());
+                myBuddies = new HashSet<>();
+                user.setBuddies(myBuddies);
             }
 
-            myBuddies.add(newBuddy);
+            for (User buddy : myBuddies) {
+                if (buddy.getEmail().equals(email)) {
+                    logger.warning("This buddy is already connected to you.");
+                    return;
+                }
+            }
+
+            user.getBuddies().add(newBuddy);
             logger.info("New buddy added: " + newBuddy.getUsername() + " to user: " + user.getUsername());
             newBuddy.getBuddies().add(user);
             logger.info("New buddy added: " + user.getUsername() + " to user: " + newBuddy.getUsername());
@@ -82,8 +96,6 @@ public class UserService {
         logger.info("fetching all buddies from " + sender.getUsername());
         return sender.getBuddies();
     }
-
-    // TODO: vérifier si suppr getAllMyBuddyNames ok (supprimer des tests)
 
     /**
      * Checks which information has been modified before saving the User in the database.
@@ -188,7 +200,18 @@ public class UserService {
         user.getBuddies().clear();
         logger.fine("Deleted buddy list of the user: " + user.getUsername());
 
-        userRepository.delete(user);
+        List<Transaction> transactionsAsSender = transactionRepository.findBySender(user);
+        for (Transaction transaction : transactionsAsSender) {
+            transaction.setSender(null);
+        }
+
+        List<Transaction> transactionsAsReceiver = transactionRepository.findByReceiver(user);
+        for (Transaction transaction : transactionsAsReceiver) {
+            transaction.setReceiver(null);
+        }
+        logger.info("User " + user.getUsername() + " has been set as null for " + (transactionsAsSender.size() + transactionsAsReceiver.size()));
+
+        userRepository.deleteById(user.getId());
         logger.info("Deleted user: " + user.getUsername());
     }
 }

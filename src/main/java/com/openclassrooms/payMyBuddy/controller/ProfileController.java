@@ -20,6 +20,7 @@ public class ProfileController {
     public String profile(Model model) {
         User currentUser = userService.getCurrentUser();
         model.addAttribute("user", currentUser);
+        System.out.println(currentUser);
         model.addAttribute("activePage","profile");
 
         return "profile";

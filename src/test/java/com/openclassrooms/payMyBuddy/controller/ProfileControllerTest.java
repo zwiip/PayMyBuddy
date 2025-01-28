@@ -22,19 +22,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class ProfileControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private UserService userService;
 
-//    @Test
-//    @WithMockUser
-//    void testGetProfile() throws Exception {
-//        mockMvc.perform(get("/profile"))
-//                .andExpect(status().isOk())
-//                .andExpect(view().name("profile"));
-//    }
+
+    @Test
+    @WithMockUser
+    void testGetTransfer() throws Exception {
+        User currentUser = new User("Marilla", "marilla@cuthbert.com", "avonlea");
+        when(userService.getCurrentUser()).thenReturn(currentUser);
+
+        mockMvc.perform(get("/profile"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("profile"));
+    }
 
     @Test
     @WithMockUser

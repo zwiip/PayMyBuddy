@@ -4,7 +4,6 @@ import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -13,7 +12,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -50,34 +48,39 @@ public class UserServiceIT {
         assertNull(foundUser);
     }
 
-//    @Test // ce test ne fonctionne pas
-//    public void givenNewBuddy_whenAddNewBuddy_thenBuddyAddedToSetOfBuddies_andUserAddedToSetOfNewBuddyBuddies() {
-//        Set<User> myBuddies = new HashSet<>();
-//        myBuddies.add(buddy);
-//        user.setBuddies(myBuddies);
-//        userRepository.save(user);
-//
-//        userService.addNewBuddy("another@gmail.com", user);
-//
-//        assertEquals(2, user.getBuddies().size());
-//        assertTrue(user.getBuddies().contains(anotherBuddy));
-//        assertTrue(anotherBuddy.getBuddies().contains(user));
-//    }
-//
-//    @Test // ce test ne fonctionne pas
-//    public void givenExistingBuddy_whenAddNewBuddy_thenExistingBuddyNotAdded() {
-//        Set<User> myBuddies = new HashSet<>();
-//        myBuddies.add(buddy);
-//        myBuddies.add(anotherBuddy);
-//        user.setBuddies(myBuddies);
-//        userRepository.save(user);
-//
-//        userService.addNewBuddy("another@gmail.com", user);
-//
-//        assertEquals(2, user.getBuddies().size());
-//        assertTrue(user.getBuddies().contains(buddy));
-//        assertTrue(user.getBuddies().contains(anotherBuddy));
-//    }
+    @Test
+    public void givenNewBuddy_whenAddNewBuddy_thenBuddyAddedToSetOfBuddies_andUserAddedToSetOfNewBuddyBuddies() {
+        Set<User> myBuddies = new HashSet<>();
+        myBuddies.add(buddy);
+        user.setBuddies(myBuddies);
+        userRepository.save(user);
+
+        userService.addNewBuddy("another@gmail.com", user);
+
+        assertEquals(2, user.getBuddies().size());
+
+        User foundUser = null;
+        for(User buddy : user.getBuddies()) {
+            if (buddy.getEmail().equals("another@gmail.com")) {
+                foundUser = buddy;
+            }
+        }
+        assertNotNull(foundUser);
+    }
+
+    @Test
+    public void givenExistingBuddy_whenAddNewBuddy_thenExistingBuddyNotAdded() {
+        Set<User> myBuddies = new HashSet<>();
+        myBuddies.add(buddy);
+        myBuddies.add(anotherBuddy);
+        user.setBuddies(myBuddies);
+        userRepository.save(user);
+        assertEquals(2, user.getBuddies().size());
+
+        userService.addNewBuddy("another@gmail.com", user);
+
+        assertEquals(2, user.getBuddies().size());
+    }
 
     @Test
     public void givenTwoBuddies_whenGetAllMyBuddies_thenReturnMyTwoBuddies() {
@@ -122,29 +125,32 @@ public class UserServiceIT {
         assertNotNull(savedUser);
         assertEquals("NewUser", savedUser.getUsername());
     }
-//
-//    @Test
-//    public void givenTwoBuddies_whenDeleteUser_thenUserRemovedFromBuddiesAndDeleted() {
-//        Set<User> myBuddies = new HashSet<>();
-//        myBuddies.add(buddy);
-//        myBuddies.add(anotherBuddy);
-//        user.setBuddies(myBuddies);
-//
-//        Set<User> myFirstBuddyBuddies = new HashSet<>();
-//        myFirstBuddyBuddies.add(user);
-//        myFirstBuddyBuddies.add(anotherBuddy);
-//        buddy.setBuddies(myFirstBuddyBuddies);
-//
-//        Set<User> mySecondBuddyBuddies = new HashSet<>();
-//        mySecondBuddyBuddies.add(user);
-//        mySecondBuddyBuddies.add(buddy);
-//        anotherBuddy.setBuddies(mySecondBuddyBuddies);
-//
-//        userService.deleteUser(user);
-//
-//        assertFalse(myFirstBuddyBuddies.contains(user));
-//        assertFalse(mySecondBuddyBuddies.contains(user));
-//
-//        verify(userRepository, times(1)).delete(user);
-//    }
+
+    @Test
+    public void givenTwoBuddies_whenDeleteUser_thenUserRemovedFromBuddiesAndDeleted() {
+        Set<User> myBuddies = new HashSet<>();
+        myBuddies.add(buddy);
+        myBuddies.add(anotherBuddy);
+        user.setBuddies(myBuddies);
+        userRepository.save(user);
+
+        Set<User> myFirstBuddyBuddies = new HashSet<>();
+        myFirstBuddyBuddies.add(user);
+        myFirstBuddyBuddies.add(anotherBuddy);
+        buddy.setBuddies(myFirstBuddyBuddies);
+        userRepository.save(buddy);
+
+        Set<User> mySecondBuddyBuddies = new HashSet<>();
+        mySecondBuddyBuddies.add(user);
+        mySecondBuddyBuddies.add(buddy);
+        anotherBuddy.setBuddies(mySecondBuddyBuddies);
+        userRepository.save(anotherBuddy);
+
+        userService.deleteUser(user);
+
+        assertFalse(myFirstBuddyBuddies.contains(user));
+        assertFalse(mySecondBuddyBuddies.contains(user));
+        User deletedUser = userRepository.findByEmail("user@gmail.com");
+        assertNull(deletedUser);
+    }
 }

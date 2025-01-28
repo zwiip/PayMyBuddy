@@ -1,10 +1,12 @@
 package com.openclassrooms.payMyBuddy.service;
 
 import com.openclassrooms.payMyBuddy.model.User;
+import com.openclassrooms.payMyBuddy.repository.TransactionRepository;
 import com.openclassrooms.payMyBuddy.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashSet;
@@ -19,13 +21,17 @@ public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private TransactionRepository transactionRepository;
+
     private UserService userService;
     private User user, buddy, anotherBuddy;
 
     @BeforeEach
     public void setUp() {
         userRepository = mock(UserRepository.class);
-        userService = new UserService(userRepository);
+        transactionRepository = mock(TransactionRepository.class);
+        userService = new UserService(userRepository, transactionRepository);
 
         user = new User("User", "user@gmail.com", "0000");
         buddy = new User("Buddy", "buddy@gmail.com", "4321");
@@ -46,6 +52,13 @@ public class UserServiceTest {
     }
 
     @Test
+    void givenNullUserEmail_whenFindUserByEmail_thenReturnNull() {
+        User nullUser = userService.findUserByEmail("nope@gmail.com");
+
+        assertNull(nullUser);
+    }
+
+    @Test
     public void givenNewBuddy_whenAddNewBuddy_thenBuddyAddedToSetOfBuddies_andUserAddedToSetOfNewBuddyBuddies() {
         when(userRepository.findByEmail("another@gmail.com")).thenReturn(anotherBuddy);
 
@@ -62,13 +75,24 @@ public class UserServiceTest {
         myBuddies.add(anotherBuddy);
         user.setBuddies(myBuddies);
         when(userRepository.findByEmail("another@gmail.com")).thenReturn(anotherBuddy);
-
+        assertEquals(2, user.getBuddies().size());
 
         userService.addNewBuddy("another@gmail.com", user);
 
         assertEquals(2, user.getBuddies().size());
         assertTrue(user.getBuddies().contains(buddy));
         assertTrue(user.getBuddies().contains(anotherBuddy));
+    }
+
+    @Test
+    public void givenBadEmail_whenAddNewBuddy_thenThrowsUsernameNotFountException() {
+        Set<User> myBuddies = new HashSet<>();
+        myBuddies.add(buddy);
+        user.setBuddies(myBuddies);
+
+        assertThrows(UsernameNotFoundException.class, ()-> {
+            userService.addNewBuddy("nope@gmail.com", user);
+        });
     }
 
     @Test
@@ -85,6 +109,24 @@ public class UserServiceTest {
     }
 
     @Test
+    public void givenUpdatedUsername_whenUpdateUser_thenUpdatedUserUsername() {
+        User newUsernameUser = new User("Updated", "user@gmail.com", "0000");
+
+        userService.updateUser(newUsernameUser, user);
+
+        assertEquals("Updated", user.getUsername());
+    }
+
+    @Test
+    void givenCorrectAmountAndUser_whenUpdateWallet_thenWalletUpdated() {
+        user.setWallet(100);
+
+        userService.updateWallet(user,200);
+
+        assertEquals(200, user.getWallet());
+    }
+
+    @Test
     public void givenCorrectInputs_whenSaveNewUser_thenUserIsSaved() {
         User newUser = new User("NewUser", "newuser@gmail.com", "password123");
 
@@ -98,4 +140,10 @@ public class UserServiceTest {
         assertEquals("NewUser", savedUser.getUsername());
     }
 
+    @Test
+    void givenBadAuthentication_whenGetCurrentUser_thenThrowsIllegalStateException() {
+        assertThrows(IllegalStateException.class, ()-> {
+           userService.getCurrentUser();
+        });
+    }
 }
