@@ -1,7 +1,7 @@
 /* VARIABLES */
 :root {
     --main-color: #F69F1D;
-    --secondary-color: #207FEE;
+    --secondary-color: #1D76DB;
     --neutral-color: #E0E0E0;
     --font-family: 'Inter', serif;
     --success-border: #c3e6cb;
@@ -17,7 +17,7 @@
 
 html, button, input, p, select {
     font-size: 24px;
-    weight: 400;
+    font-weight: 400;
 }
 
 body {

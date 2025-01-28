@@ -14,10 +14,10 @@
                 <form class="column-between-center h100" th:action="@{/login}" method="post">
                     <div class="column-center-center h100">
                         <label for="email">Mail</label>
-                        <input class="log-input" type="email" id="email" name="email" placeholder="Mail" required/>
+                        <input class="log-input" type="email" id="email" name="email" aria-labelledby="email" placeholder="Mail" required/>
 
                         <label for="password">Mot de Passe</label>
-                        <input class="log-input" type="password" id="password" name="password" placeholder="Mot de passe" />
+                        <input class="log-input" type="password" id="password" name="password" aria-labelledby="password" placeholder="Mot de passe" />
                     </div>
 
                     <button class="btn clickable" type="submit">Se connecter</button>
