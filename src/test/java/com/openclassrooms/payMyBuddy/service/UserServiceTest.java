@@ -1,5 +1,6 @@
 package com.openclassrooms.payMyBuddy.service;
 
+import com.openclassrooms.payMyBuddy.model.Transaction;
 import com.openclassrooms.payMyBuddy.model.User;
 import com.openclassrooms.payMyBuddy.repository.TransactionRepository;
 import com.openclassrooms.payMyBuddy.repository.UserRepository;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -145,5 +147,41 @@ public class UserServiceTest {
         assertThrows(IllegalStateException.class, ()-> {
            userService.getCurrentUser();
         });
+    }
+
+    @Test
+    void givenUserWithBuddiesAndTransactions_whenDeleteUser_thenDeleteIsSuccessful() {
+        // Arrange
+        Set<User> buddies = new HashSet<>();
+        buddies.add(buddy);
+        buddies.add(anotherBuddy);
+        user.setBuddies(buddies);
+
+        List<Transaction> transactionsAsSender = List.of(
+                new Transaction(user, buddy, "Payment", 50),
+                new Transaction(user, anotherBuddy, "Payment2", 75)
+        );
+        List<Transaction> transactionsAsReceiver = List.of(
+                new Transaction(buddy, user, "Refund", 30)
+        );
+
+        when(transactionRepository.findBySender(user)).thenReturn(transactionsAsSender);
+        when(transactionRepository.findByReceiver(user)).thenReturn(transactionsAsReceiver);
+
+        // Act
+        userService.deleteUser(user);
+
+        // Assert
+        assertTrue(user.getBuddies().isEmpty());
+        verify(transactionRepository, times(1)).findBySender(user);
+        verify(transactionRepository, times(1)).findByReceiver(user);
+        verify(userRepository, times(1)).deleteById(user.getId());
+
+        for (Transaction transaction : transactionsAsSender) {
+            assertNull(transaction.getSender());
+        }
+        for (Transaction transaction : transactionsAsReceiver) {
+            assertNull(transaction.getReceiver());
+        }
     }
 }

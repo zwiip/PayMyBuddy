@@ -50,6 +50,39 @@ public class TransactionServiceTest {
         assertTrue(actualTransactions.contains(newTransaction));
         assertTrue(actualTransactions.contains(anotherTransaction));
     }
+
+
+    @Test
+    public void givenValidTransaction_whenSaveNewTransaction_thenUpdateWalletsAndSaveTransaction() {
+        // Arrange
+        sender.setWallet(100.00);
+        receiver.setWallet(50.00);
+        newTransaction = new Transaction(sender, receiver, "Payment for services", 25.50);
+
+        when(userService.findUserByEmail(receiver.getEmail())).thenReturn(receiver);
+        when(transactionRepository.save(any(Transaction.class))).thenReturn(newTransaction);
+        doNothing().when(userService).updateWallet(any(User.class), anyDouble());
+
+        // Act
+        transactionService.saveNewTransaction(sender, receiver.getEmail(), newTransaction.getDescription(), newTransaction.getAmount());
+
+        // Assert
+        verify(userService, times(1)).updateWallet(sender, 74.50); // 100 - 25.50
+        verify(userService, times(1)).updateWallet(receiver, 75.50);
+
+    }
+
+    @Test
+    public void givenNonExistentReceiver_whenSaveNewTransaction_thenThrowException() {
+        // Arrange
+        when(userService.findUserByEmail("nonexistent@gmail.com")).thenReturn(null);
+
+        // Act & Assert
+        assertThrows(RuntimeException.class, () -> transactionService.saveNewTransaction(sender, "nonexistent@gmail.com", "Description", 10.00));
+
+        verify(transactionRepository, never()).save(any(Transaction.class));
+    }
+
 //
 //    @Test
 //    public void givenANewTransaction_whenSaveNewTransaction_thenTransactionSaved() {
